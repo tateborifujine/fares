@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疑似事務管理コード変換</title>
+    <script src="https://tatebori.static.jp/f/data.js"></script>
+    <link rel="icon" href="./favicon.ico">
+    <script src="../template.js"></script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="canonical" href="https://tatebori.static.jp/f/search.html">
+    <style>
+         h101 {
+            font-size: 125%;
+        }
+
+        .main {
+            max-width: 1000px;
+            min-height: 70vh;
+        }
+        body {
+            font-size:120%;
+            text-align: center;
+        }
+        #entrybox {
+            width:400px;
+        }
+        #mainbox {
+            margin-top:75px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main" style="font-size:100%;">
+        <div style="font-size:120%;">疑似事務管理コード検索</div>
+        <div>区切り文字には、「・」（中黒）、「、」（読点）、「ー」のいずれかを使用してください。</div>
+        <div></div>
+        <div id="mainbox"><input type="text" id="entrybox"><input id="mainbtn" type="button" onclick="sc.f(document.getElementById('entrybox').value)" value="決定"></div>
+        <div id="coderesult"></div>
+        <br>
+        <div id="coderesult2"></div>
+    </div>
+    <script>
+        let temp = {i:""};
+        let sc = {};
+        let re = [];
+        temp.haifun = ["サッポロビール庭園","ガーラ湯沢","万座・鹿沢口","上越国際スキー場前","岩原スキー場前","高輪ゲートウェイ","広川ビーチ","ユニバーサルシティ","ラベンダー畑","バルーンさが","南三陸町役場・病院前","呉ポートピア","鈴鹿サーキット稲生","鹿島サッカースタジアム","東京テレポート","品川シーサイド","東武ワールドスクウェア"];//ハイフンあるいは中黒入りの駅名対策
+        sc.f = (v) => {
+            re = [];
+            if (Array.isArray(v) == false) v = v.split(/・|ー|、/g);
+            toho:for (let i = 0;i < v.length;i++) {
+                for (let i2 = 0;i2 < temp.haifun.length;i2++) {
+                    temp.hai2 = temp.haifun[i2].split(/・|ー/);
+                    if (v[i] == temp.hai2[0] && i + 1 < v.length && v[i + 1] == temp.hai2[1]) {
+                        v[i] = temp.haifun[i2];
+                        v.splice(i + 1,1);
+                        break;
+                    }
+                }
+                if (v[i] == "あしかがフラワ" && i + 2 < v.length && v[i + 1] == "パ" && v[i + 2] == "ク") {
+                    v[i] = "あしかがフラワーパーク";
+                    v.splice(i + 1,2);
+                } else if (v[i] == "スペー" && i + 2 < v.length && v[i + 1] == "スワ" && v[i + 2] == "ルド") {
+                    v[i] = "スペースワールド";
+                    v.splice(i + 1, 2);
+                }
+                if (v[i] == "") continue;
+                let re2 = true;
+                for (let i2 = 0;i2 < sta.allkana2.length;i2++) {
+                    let i3 = sta.kana[sta.allkana2[i2]].sta.findIndex(e => (e[0] == v[i] || e[1] == v[i] || e[2] == v[i]));
+                    if (i3 == -1) continue;
+                    else {
+                        re.push(sta.kana[sta.allkana2[i2]].sta[i3]);
+                        re2 = false;
+                        continue toho;
+                    }
+                }
+                if (re2) {
+                    console.log("");
+                    for (let i4 = 0;i4 < sta.allskana.length;i4++) {
+                        console.log(i4,sta.allskana[i4]);
+                        let i3 = sta.skana[sta.allskana[i4]].sta.findIndex(e => (e[0] == v[i] || e[1] == v[i] || e[2] == v[i]));
+                        if (i3 == -1) continue;
+                        else {
+                            re.push(sta.skana[sta.allskana[i4]].sta[i3]);
+                            continue toho;
+                        }
+                    }
+                }
+            }
+            let tr1 = [...Array(re.length)].map((_,ir) => re[ir][0]);
+            let tr2 = [...Array(re.length)].map((_,ir) => `${re[ir][1]}：${re[ir][0]}`);
+            document.getElementById("coderesult").innerHTML = tr1.join("、");
+            document.getElementById("coderesult2").innerHTML = tr2.join("<br>");
+        };
+        window.addEventListener("keydown",function (event) {
+            let key = event.key;
+            if (key == "Enter" && event.ctrlKey) document.getElementById("mainbtn").click();
+            else if (key == "q" && event.ctrlKey) document.getElementById("entrybox").focus();
+        })
+    </script>
+</body>
+</html>

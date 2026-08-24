@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路線・駅データ閲覧/ふぁれす(FARES)</title>
+    <script src="./data.js"></script>
+    <script src="./henkan.js"></script>
+    <script src="../../template.js"></script>
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="canonical" href="https://tatebori.static.jp/f/data.html">
+    <style>
+        .setsuzoku {
+            max-width: calc(100svw-450px);
+        }
+
+        .kana {
+            min-width: 70px;
+            max-width: 70px;
+        }
+
+        @media screen and (max-width:550px) {
+            body {
+                font-size: 3svw;
+            }
+
+            .staname {
+                min-width: 12svw;
+            }
+        }
+
+        table {
+            border-spacing: 0px;
+        }
+
+        .jcode {
+            max-width: 71px;
+        }
+
+        .main {
+            border-radius: 10px;
+            width: 97dvw;
+            max-width: 99dvw;
+            margin-top: 10px;
+            padding: 0px 0px;
+            min-height: calc(100dvh - 40px);
+        }
+    </style>
+    <script>
+        function tohalf(str) {// 全角英数字を半角に変換
+            str = str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (s) {
+                return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+            }); return str;
+        }; function tofull(str) {// 半角英数字を全角に変換
+            if (typeof str == "number") str = str.toString();
+            str = str.replace(/[A-Za-z0-9]/g, function (s) {
+                return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);
+            }); return str;
+        };
+    </script>
+</head>
+
+<body>
+    <div class="main">
+        <h2>JR路線データ検索</h2>
+        <div>
+            JR運賃計算WEB「ふぁれす」で使用している路線・駅データの検索・閲覧ができます。<br>
+            事務管理ｺｰﾄﾞ,駅名,略ｶﾅ,営業㌔,換算/擬制㌔の閲覧が可能です。
+        </div>
+        <div><input type="text" id="line_input" placeholder="ここに路線名を入力"><input type="button" value="検索"
+                onclick="view.f.get()"></div>
+        <div><select id="sta_select" onchange="view.f.select.change()">
+                <option value="" hidden>路線を選択してください。</option>
+            </select></div>
+        <div style="text-align: left;">
+            <div>登録路線名:<span id="t_rosen"></span></div>
+            <div>登録疑似カナコード:<span id="t_kana"></span></div>
+            <div id="box"></div>
+            <br>
+        </div>
+        <div style="text-align: center;">
+            <h3 style="margin-top:5px;margin-bottom:5px;">データダウンロード(CSV形式)</h3>
+            <table style="margin: auto;text-align: left;">
+                <tr>
+                    <td><label><input type="checkbox" id="csv_code" checked>事務管理コード</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" id="csv_name" checked>駅名</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" id="csv_kana" checked>駅名カナ</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" id="csv_line" checked>接続路線</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" id="csv_kiro1" checked>営業キロ</label></td>
+                </tr>
+                <tr>
+                    <td><label><input type="checkbox" id="csv_kiro2" checked>換算/擬制キロ</label></td>
+                </tr>
+                <tr>
+                    <td><input type="button" value="路線別ﾀﾞｳﾝﾛｰﾄﾞ" onclick="view.f.csv.linedownload()"> <input
+                            type="button" value="全駅分ﾀﾞｳﾝﾛｰﾄﾞ" onclick="view.f.csv.alldownloadcode()"></td>
+                </tr>
+            </table>
+            <div>
+                ※全駅分ﾀﾞｳﾝﾛｰﾄﾞでは、営業㌔と換算/擬制㌔は出力されません。<br>
+                ※接続路線は、登録疑似ｶﾅｺｰﾄﾞを「;」で繋いで出力されます。
+            </div>
+            <div><a href="./kasan.html">JR東日本の2026年運賃改定後の加算運賃閲覧はこちらから</a></div>
+        </div>
+    </div>
+    <script>
+        let view = { f: { select: {}, csv: {} } };
+        let temp = { e: {}, v: "" };
+        for (let i = 0; i < sta.allkana.length; i++) {
+            temp.e.i1 = document.createElement("option");
+            temp.e.i1.value = sta.allkana[i];
+            if (sta.allskana2.includes(sta.allkana[i])) temp.e.i1.innerHTML = sta.skana[sta.allkana[i]].name2;
+            else temp.e.i1.innerHTML = sta.kana[sta.allkana[i]].name2;
+            document.getElementById("sta_select").appendChild(temp.e.i1);
+        }; view.f.get = (m, v) => {
+            if (m == void 0) m = 1;
+            if (v == void 0) v = document.getElementById("line_input").value;
+            temp.v2 = v;
+            v = henkan.f(v).split("-")[0];
+            if (temp.v2 == "五郎別線") v = "ヨサン9";
+            if ((v in sta.kana == false && v in sta.skana == false) && temp.v2.at(-1) != "線") v = henkan.f(`${temp.v2}線`).split("-")[0];
+            if (v in sta.kana == false && v in sta.skana == false) {
+                if (v.charAt(v.length - 1) == "線") v = v.substring(0, v.length - 1);
+                for (let i = 0; i < sta.allkana2.length; i++) {
+                    if (sta.kana[sta.allkana2[i]].sta.findIndex((e) => v == e[0] || v == e[1] || v == e[2]) > -1) {
+                        v = sta.allkana2[i];
+                        break;
+                    }
+                } if (v in sta.kana == false) {
+                    document.getElementById("box").innerHTML = "路線が見つかりませんでした。";
+                    document.getElementById("t_rosen").innerHTML = document.getElementById("t_kana").innerHTML = "";
+                    return false;
+                }
+            } if (v in sta.kana) temp.s = sta.kana;
+            else temp.s = sta.skana;
+            document.getElementById("t_rosen").innerHTML = temp.s[v].name;
+            document.getElementById("t_kana").innerHTML = v;
+            if (m < 2) document.getElementById("sta_select").querySelector(`option[value="${v}"]`).selected = true;
+            if (m % 2 == 0) document.getElementById("line_input").value = temp.s[v].name.split("(")[0];
+            temp.i = `<table><tr><td class="jcode">事務管理ｺｰﾄﾞ</td><td class="staname">駅名</td><td class="kana">略カナ</td><td>接続路線</td><td>営業㌔</td><td>換算/擬制㌔</td></tr>`;
+            for (let i = 0; i < temp.s[v].sta.length; i++) {
+                temp.i += `<tr><td class="jcode">${temp.s[v].sta[i][0]}</td><td class="staname">${temp.s[v].sta[i][1]}</td><td class="kana">${temp.s[v].sta[i][2]}</td><td class="setsuzoku">`;
+                if (temp.s[v].sta[i][3] != false) {
+                    temp.i2 = [];
+                    for (let i2 = 0; i2 < temp.s[v].sta[i][3].length; i2++) {
+                        if (isNaN(temp.s[v].sta[i][3][i2])) temp.i2.push(`<a href="javascript:view.f.get(0,'${temp.s[v].sta[i][3][i2]}')">${sta.kana[temp.s[v].sta[i][3][i2]].name}</a>`);
+                        else temp.i2.push(`<a href="javascript:view.f.get(0,'${temp.s[v].sta[i][3][i2]}')">${sta.skana[temp.s[v].sta[i][3][i2]].name}</a>`);
+                    } temp.i += temp.i2.join(",");
+                } temp.i += `</td><td>${temp.s[v].sta[i][4]}</td>`;
+                if (temp.s[v].sta[i][5] != void 0) temp.i += `<td>${temp.s[v].sta[i][5]}</td></tr>`;
+                else temp.i += "<td></td></tr>";
+            } temp.i += "</table>";
+            document.getElementById("box").innerHTML = temp.i;
+            temp.v = v;
+        }; view.f.select.change = () => {
+            temp.s1 = document.getElementById("sta_select").options[document.getElementById("sta_select").selectedIndex].value;
+            view.f.get(2, temp.s1);
+        }; view.f.csv.linedownload = () => {
+            if (temp.v == "") {
+                alert("路線が選択されていません。");
+                return false;
+            } temp.allcode = [];
+            if (temp.v in sta.kana) {
+                for (let i = 0; i < sta.kana[temp.v].sta.length; i++) {
+                    temp.allcode2 = [];
+                    if (document.getElementById("csv_code").checked) temp.allcode2.push(`${sta.kana[temp.v].sta[i][0]}`);
+                    if (document.getElementById("csv_name").checked) temp.allcode2.push(`${sta.kana[temp.v].sta[i][1]}`);
+                    if (document.getElementById("csv_kana").checked) temp.allcode2.push(`${sta.kana[temp.v].sta[i][2]}`);
+                    if (document.getElementById("csv_line").checked) temp.allcode2.push(`${sta.kana[temp.v].sta[i][3].join(";")}`);
+                    if (document.getElementById("csv_kiro1").checked) temp.allcode2.push(`${sta.kana[temp.v].sta[i][4]}`);
+                    if (document.getElementById("csv_kiro2").checked) {
+                        if (sta.kana[temp.v].sta[i][5] == void 0) temp.allcode2.push("");
+                        else temp.allcode2.push(`${sta.kana[temp.v].sta[i][5]}`);
+                    } temp.allcode.push(temp.allcode2.join(","));
+                }
+            } else {
+                for (let i = 0; i < sta.skana[temp.v].sta.length; i++) {
+                    temp.allcode2 = [];
+                    if (document.getElementById("csv_code").checked) temp.allcode2.push(`${sta.skana[temp.v].sta[i][0]}`);
+                    if (document.getElementById("csv_name").checked) temp.allcode2.push(`${sta.skana[temp.v].sta[i][1]}`);
+                    if (document.getElementById("csv_kana").checked) temp.allcode2.push(`${sta.skana[temp.v].sta[i][2]}`);
+                    if (document.getElementById("csv_line").checked) temp.allcode2.push(`${sta.skana[temp.v].sta[i][3].join(";")}`);
+                    if (document.getElementById("csv_kiro1").checked) temp.allcode2.push(`${sta.skana[temp.v].sta[i][4]}`);
+                    temp.allcode.push(temp.allcode2.join(","));
+                }
+            } temp.allcode = temp.allcode.join("\n");
+            const blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), temp.allcode], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${kanaToRoman(temp.v)}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }; view.f.csv.alldownloadcode = () => {
+            temp.allcode = [];
+            temp.allcode3 = {};
+            for (let i = 0; i < sta.allkana2.length; i++) {
+                for (let i2 = 0; i2 < sta.kana[sta.allkana2[i]].sta.length; i2++) {
+                    if (sta.kana[sta.allkana2[i]].sta[i2][0].toString() in temp.allcode3) continue;
+                    else temp.allcode3[sta.kana[sta.allkana2[i]].sta[i2][0].toString()] = true;
+                    temp.allcode2 = [];
+                    if (document.getElementById("csv_code").checked) temp.allcode2.push(`${sta.kana[sta.allkana2[i]].sta[i2][0]}`);
+                    if (document.getElementById("csv_name").checked) temp.allcode2.push(`${sta.kana[sta.allkana2[i]].sta[i2][1]}`);
+                    if (document.getElementById("csv_kana").checked) temp.allcode2.push(`${sta.kana[sta.allkana2[i]].sta[i2][2]}`);
+                    if (document.getElementById("csv_line").checked) {
+                        if (Array.isArray(sta.kana[sta.allkana2[i]].sta[i2][3])) temp.allcode2.push(`${sta.allkana2[i]};${sta.kana[sta.allkana2[i]].sta[i2][3].join(";")}`);
+                        else temp.allcode2.push("");
+                    }
+                    temp.allcode.push(temp.allcode2.join(","));
+                }
+            } for (let i = 0; i < sta.allskana.length; i++) {
+                for (let i2 = 0; i2 < sta.skana[sta.allskana[i]].sta.length; i2++) {
+                    if (sta.skana[sta.allskana[i]].sta[i2][0].toString() in temp.allcode3) continue;
+                    else temp.allcode3[sta.skana[sta.allskana[i]].sta[i2][0].toString()] = true;
+                    temp.allcode2 = [];
+                    if (document.getElementById("csv_code").checked) temp.allcode2.push(`${sta.skana[sta.allskana[i]].sta[i2][0]}`);
+                    if (document.getElementById("csv_name").checked) temp.allcode2.push(`${sta.skana[sta.allskana[i]].sta[i2][1]}`);
+                    if (document.getElementById("csv_kana").checked) {
+                        if (sta.skana[sta.allskana[i]].sta[i2][2] == void 0) temp.allcode2.push("");
+                        else temp.allcode2.push(`${sta.skana[sta.allskana[i]].sta[i2][2]}`);
+                    } if (document.getElementById("csv_line").checked) {
+                        if (Array.isArray(sta.skana[sta.allskana[i]].sta[i2][3])) temp.allcode2.push(`${sta.allskana[i]};${sta.skana[sta.allskana[i]].sta[i2][3].join(";")}`);
+                        else temp.allcode2.push("");
+                    }
+                    temp.allcode.push(temp.allcode2.join(","));
+                }
+            } temp.allcode = temp.allcode.join("\n");
+            const blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), temp.allcode], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'allcode.csv';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        };
+        const romanMap = {
+            'あ': 'a',
+            'い': 'i',
+            'う': 'u',
+            'え': 'e',
+            'お': 'o',
+            'か': 'ka',
+            'き': 'ki',
+            'く': 'ku',
+            'け': 'ke',
+            'こ': 'ko',
+            'さ': 'sa',
+            'し': 'shi',
+            'す': 'su',
+            'せ': 'se',
+            'そ': 'so',
+            'た': 'ta',
+            'ち': 'chi',
+            'つ': 'tsu',
+            'て': 'te',
+            'と': 'to',
+            'な': 'na',
+            'に': 'ni',
+            'ぬ': 'nu',
+            'ね': 'ne',
+            'の': 'no',
+            'は': 'ha',
+            'ひ': 'hi',
+            'ふ': 'fu',
+            'へ': 'he',
+            'ほ': 'ho',
+            'ま': 'ma',
+            'み': 'mi',
+            'む': 'mu',
+            'め': 'me',
+            'も': 'mo',
+            'や': 'ya',
+            'ゆ': 'yu',
+            'よ': 'yo',
+            'ら': 'ra',
+            'り': 'ri',
+            'る': 'ru',
+            'れ': 're',
+            'ろ': 'ro',
+            'わ': 'wa',
+            'ゐ': 'wi',
+            'ゑ': 'we',
+            'を': 'wo',
+            'ん': 'n',
+            'が': 'ga',
+            'ぎ': 'gi',
+            'ぐ': 'gu',
+            'げ': 'ge',
+            'ご': 'go',
+            'ざ': 'za',
+            'じ': 'ji',
+            'ず': 'zu',
+            'ぜ': 'ze',
+            'ぞ': 'zo',
+            'だ': 'da',
+            'ぢ': 'di',
+            'づ': 'du',
+            'で': 'de',
+            'ど': 'do',
+            'ば': 'ba',
+            'び': 'bi',
+            'ぶ': 'bu',
+            'べ': 'be',
+            'ぼ': 'bo',
+            'ぱ': 'pa',
+            'ぴ': 'pi',
+            'ぷ': 'pu',
+            'ぺ': 'pe',
+            'ぽ': 'po',
+            'きゃ': 'kya',
+            'きぃ': 'kyi',
+            'きゅ': 'kyu',
+            'きぇ': 'kye',
+            'きょ': 'kyo',
+            'くぁ': 'qa',
+            'くぃ': 'qi',
+            'くぇ': 'qe',
+            'くぉ': 'qo',
+            'くゃ': 'qya',
+            'くゅ': 'qyu',
+            'くょ': 'qyo',
+            'しゃ': 'sha',
+            'しぃ': 'syi',
+            'しゅ': 'shu',
+            'しぇ': 'sye',
+            'しょ': 'sho',
+            'ちゃ': 'cha',
+            'ちぃ': 'tyi',
+            'ちゅ': 'chu',
+            'ちぇ': 'tye',
+            'ちょ': 'tyo',
+            'てゃ': 'tha',
+            'てぃ': 'thi',
+            'てゅ': 'thu',
+            'てぇ': 'the',
+            'てょ': 'tho',
+            'ひゃ': 'hya',
+            'ひぃ': 'hyi',
+            'ひゅ': 'hyu',
+            'ひぇ': 'hye',
+            'ひょ': 'hyo',
+            'ふぁ': 'fa',
+            'ふぃ': 'fi',
+            'ふぇ': 'fe',
+            'ふぉ': 'fo',
+            'みゃ': 'mya',
+            'みぃ': 'myi',
+            'みゅ': 'myu',
+            'みぇ': 'mye',
+            'みょ': 'myo',
+            'ヴぁ': 'va',
+            'ヴぃ': 'vi',
+            'ヴぇ': 've',
+            'ヴぉ': 'vo',
+            'ぎゃ': 'gya',
+            'ぎぃ': 'gyi',
+            'ぎゅ': 'gyu',
+            'ぎぇ': 'gye',
+            'ぎょ': 'gyo',
+            'じゃ': 'ja',
+            'じぃ': 'ji',
+            'じゅ': 'ju',
+            'じぇ': 'je',
+            'じょ': 'jo',
+            'ぢゃ': 'dya',
+            'ぢぃ': 'dyi',
+            'ぢゅ': 'dyu',
+            'ぢぇ': 'dye',
+            'ぢょ': 'dyo',
+            'びゃ': 'bya',
+            'びぃ': 'byi',
+            'びゅ': 'byu',
+            'びぇ': 'bye',
+            'びょ': 'byo',
+            'ぴゃ': 'pya',
+            'ぴぃ': 'pyi',
+            'ぴゅ': 'pyu',
+            'ぴぇ': 'pye',
+            'ぴょ': 'pyo',
+            'ぁ': 'xa',
+            'ぃ': 'xi',
+            'ぅ': 'xu',
+            'ぇ': 'xe',
+            'ぉ': 'xo',
+            'ゃ': 'xya',
+            'ゅ': 'xyu',
+            'ょ': 'xyo',
+            'っ': 'xtu',
+            'ヴ': 'vu',
+            'ー': '-',
+            '、': ', ',
+            '，': ', ',
+            '。': '.'
+        };
+        const kanaToRoman = (targetStr, type, options) => {
+            const latins = {
+                hepburn: {
+                    'a': 257,
+                    'i': 299,
+                    'u': 363,
+                    'e': 275,
+                    'o': 333
+                },
+                kunrei: {
+                    'a': 226,
+                    'i': 238,
+                    'u': 251,
+                    'e': 234,
+                    'o': 244
+                }
+            };
+            if (typeof targetStr !== 'string' && typeof targetStr !== 'number') return targetStr;
+            let remStr = String(targetStr), result = '', slStr, roman, lastStr;
+            const splice = () => {
+                const oneChar = remStr.slice(0, 1);
+                remStr = remStr.slice(1);
+                return oneChar;
+            };
+            const isSmallChar = () => !!remStr.slice(0, 1).match(/^[ぁぃぅぇぉゃゅょァィゥェォャュョ]$/);
+            const toHiragana = kana => kana.replace(/[\u30a1-\u30f6]/g, match => {
+                return String.fromCharCode(match.charCodeAt(0) - 0x60);
+            });
+            const getRoman = kana => {
+                const roman = romanMap[toHiragana(kana)];
+                if (roman) return roman;
+                else return kana;
+            };
+            while (remStr) {
+                slStr = splice();
+                if (slStr.match(/^(っ|ッ)$/)) {
+                    slStr = splice();
+                    if (isSmallChar()) slStr += splice();
+                    roman = getRoman(slStr);
+                    roman = (roman !== slStr ? roman.slice(0, 1) : '') + roman;
+                } else {
+                    if (isSmallChar()) slStr += splice();
+                    roman = getRoman(slStr);
+                } const nextRoman = kanaToRoman(remStr.slice(0, 1));
+                if (roman === 'n') {
+                    if (nextRoman.match(/^[aiueo]$/)) roman += type === 'hepburn' ? '-' : '\'';
+                    else if (nextRoman.match(/^[bmp]/))  roman = 'm';
+                } else if (roman === '-') {
+                    lastStr = result.match(/[aiueo]$/);
+                    if (lastStr && options.longSound === 'latin') {
+                        result = result.slice(0, -1);
+                        roman = String.fromCharCode(latins[type][lastStr[0]]);
+                    }
+                }
+                result += roman;
+            }
+            return result;
+        };
+    </script>
+</body>
+
+</html>

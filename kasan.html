@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JR東日本加算運賃</title>
+    <link rel="stylesheet" href="../../style.css">
+    <script src="./data.js"></script>
+    <script src="../../template.js"></script>
+    <link rel="icon" href="../../favicon.ico">
+    <style>
+        .table2 td {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h2>JR東日本/2026年改定の運賃</h2>
+        <div>
+            <h3>幹線</h3>
+            <table id="fare" style="border-spacing:0">
+                <tr style="border-spacing:0" class="table2">
+                    <td colspan="3" rowspan="3">距離帯</td>
+                    <td>改定後</td>
+                    <td colspan="3">改定前運賃との差額</td>
+                </tr>
+                <tr class="table2">
+                    <td>運賃</td>
+                    <td>幹線</td>
+                    <td>東京電特</td>
+                    <td>山手線内</td>
+                </tr>
+            </table>
+            <h3>地方交通線</h3>
+            <table id="fare2">
+                <tr style="border-spacing:0" class="table2">
+                    <td colspan="3" rowspan="3">距離帯</td>
+                    <td>改定後</td>
+                    <td colspan="3">改定前<br>運賃との<br>差額</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <!--<footer></footer>-->
+    <script>
+        let f = { fare: { kansen: {} } };
+        let temp = { dom1: "", dom2: "" };
+        let s = { tax: 1.1 };
+        f.fare.kansen.honshu = (d, p, c) => {
+            d = Math.ceil(d);
+            [temp.d2, temp.d3] = [d, 0];
+            if (d > 100) f.fare.d(d);
+            //c=1なら幹線、2なら地方交通線
+            if ((p == 2 || p == 3 || p == 4) && c == 1) { //本州3社の幹線の場合
+                if (d < 101) {
+                    for (let i = 0; i < data.main.length; i++) {
+                        if (data.main[i][0] <= d && data.main[i][1] >= d) {
+                            temp.d2 = data.main[i][p + 1];
+                            break;
+                        }
+                    }
+                } else {
+                    if (p == 2) {
+                        if (temp.d[0] > 0) {
+                            temp.d2 = (Math.round((Math.round((temp.d[0] * 7.05 + temp.d[1] * 12.85 + temp.d[2] * 16.20) / 100)) * 100 * s.tax / 10)) * 10 + 440;
+                        } else {
+                            temp.d2 = (Math.round((temp.d[0] * 7.05 + temp.d[1] * 13.45 + temp.d[2] * 16.96).toFixed(3) / 100)) * 100;
+                            temp.d2 = (Math.ceil((temp.d2 * s.tax / 10).toFixed(3))) * 10;
+                            if (temp.d2 == 3960) temp.d2 = 3850;
+                            else if (temp.d2 == 4290) temp.d2 = 4180;
+                            else if (temp.d2 == 6050) temp.d2 = 5940;
+                            else if (temp.d2 == 6380) temp.d2 = 6270;
+                            else if (temp.d2 == 8140) temp.d2 = 8030;
+                            //else if (temp.d2 == 12100) temp.d2 = 11990;
+                        }
+                    } else {
+                        temp.d2 = (Math.round((temp.d[0] * 7.05 + temp.d[1] * 12.85 + temp.d[2] * 16.20) / 100)) * 100;
+                        temp.d2 = (Math.round(temp.d2 * s.tax / 10)) * 10;
+                    }
+                }
+            } else if ((p == 2 || p == 3 || p == 4) && c == 2) { //本州3社の地方交通線
+                for (let i = 0; i < data.chiho.length; i++) {
+                    if (data.chiho[i][0] <= d && data.chiho[i][1] >= d) {
+                        temp.d2 = data.chiho[i][p + 1];
+                        break;
+                    }
+                }
+            } else if ((p == 2 || p == 4) && c == 3) { //東京・大阪電車特定区間
+                if (d < 101) {
+                    for (let i = 0; i < data.main.length; i++) {
+                        if (data.main[i][0] <= d && data.main[i][1] >= d) {
+                            if (p == 2) temp.d2 = data.main[i][10];
+                            else if (p == 4) temp.d2 = data.main[i][11];
+                            break;
+                        }
+                    }
+                } else if (d < 301) {
+                    if (p == 2) {
+                        temp.d2 = Math.round(temp.d[2] * 15.30 / 100) * 100 + Math.ceil(temp.d[2] * 1.530 / 10) * 10;
+                        temp.d2 += 10;//鉄道バリアフリー料金
+                    } else if (p == 4) {
+                        temp.d2 = Math.round(temp.d[2] * 15.50 / 100) * 100 + Math.round(temp.d[2] * 1.550 / 10) * 10;
+                        temp.d2 += 10;//鉄道バリアフリー料金
+                    }
+                } else {
+                    console.log("電車特定区間内の301km以上の運賃表が存在しません。");
+                    temp.d2 = undefined;
+                }
+            } else if (c == 4) { //東京山手線内
+                if (d > 35) {
+                    console.log("東京山手線内の36km以上の運賃表が存在しません。");
+                    temp.d2 = undefined;
+                } else {
+                    for (let i = 0; i < data.main.length; i++) {
+                        if (data.main[i][0] <= d && data.main[i][1] >= d) {
+                            temp.d2 = data.main[i][12];
+                            break;
+                        }
+                    }
+                }
+            } //console.log(temp.d2);
+            return temp.d2;
+        }; f.fare.d = (d) => {
+            temp.d = [0, 0, 0];
+            if (d < 601) {
+                if (temp.d2 % 20 == 0) temp.d3 = temp.d2 - 10;
+                else temp.d3 = temp.d2 - temp.d2 % 20 + 10;
+            } else if (temp.d2 % 40 == 0) temp.d3 = temp.d2 - 20;
+            else temp.d3 = temp.d2 - temp.d2 % 40 + 20;
+            if (d < 301) temp.d[2] = temp.d3;
+            else if (d < 601) {
+                temp.d[2] = 300;
+                temp.d[1] = temp.d3 - 300;
+            } else temp.d = [temp.d3 - 600, 300, 300];
+            return 0;
+        }; for (let i = 0; i < data.main.length; i++) {
+            temp.dom1 += `<tr><td>${data.main[i][0]}</td><td>~</td><td>${data.main[i][1]}</td><td>${data.main[i][3]}</td><td>${data.main[i][3] - data.main[i][4]}</td><td>${data.main[i][3] - data.main[i][10]}</td>`;
+            if (data.main[i][1] < 36) temp.dom1 += `<td>${data.main[i][3] - data.main[i][12]}</td>`;
+            temp.dom1 += "</tr>";
+        }; for (let i = 110; i < 600; i += 20) {
+            if (i < 300) temp.dom1 += `<tr><td>${i - 9}</td><td>~</td><td>${i + 10}</td><td>${f.fare.kansen.honshu(i, 2, 1)}</td><td>${f.fare.kansen.honshu(i, 2, 1) - f.fare.kansen.honshu(i, 3, 1)}</td><td>${f.fare.kansen.honshu(i, 2, 1) - f.fare.kansen.honshu(i, 2, 3)}</td></tr>`;
+            else temp.dom1 += `<tr><td>${i - 9}</td><td>~</td><td>${i + 10}</td><td>${f.fare.kansen.honshu(i, 2, 1)}</td><td>${f.fare.kansen.honshu(i, 2, 1) - f.fare.kansen.honshu(i, 3, 1)}</td></tr>`;
+        }; for (let i = 620; i < 4000; i += 40) {
+            temp.dom1 += `<tr><td>${i - 19}</td><td>~</td><td>${i + 20}</td><td>${f.fare.kansen.honshu(i, 2, 1)}</td><td>${f.fare.kansen.honshu(i, 2, 1) - f.fare.kansen.honshu(i, 3, 1)}</td></tr>`;
+        }
+        document.getElementById("fare").innerHTML += temp.dom1;
+        for (let i = 0; i < data.chiho.length; i++) {
+            if (data.chiho[i][3] == void 0 || data.chiho[i][3] == "") break;
+            temp.dom2 += `<tr><td>${data.chiho[i][0]}</td><td>~</td><td>${data.chiho[i][1]}</td><td>${data.chiho[i][3]}</td><td>${data.chiho[i][3] - data.chiho[i][4]}</td></tr>`;
+        }; document.getElementById("fare2").innerHTML += temp.dom2;
+    </script>
+</body>
+
+</html>

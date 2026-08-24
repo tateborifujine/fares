@@ -1,0 +1,901 @@
+html {
+    background-color: white;
+}
+
+body {
+    background-color: white;
+    font-family: sans-serif;
+}
+
+.selectline div {
+    position: absolute;
+}
+
+.selectline {
+    top: 0px;
+    left: 10px;
+    position: absolute;
+}
+
+.line {
+    width: 220px;
+    left: 0px;
+}
+
+.sta {
+    width: 100px;
+    left: 90px;
+}
+
+.line2 {
+    width: 210px;
+}
+
+.sta2 {
+    width: 120px;
+}
+
+.enter {
+    top: 350px;
+    left: 100px;
+}
+
+.enterbutton {
+    transform: scale(1.3);
+    font-size: 130%;
+    line-height: 1;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    margin-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
+    border: 1px solid black;
+    border-radius: 2px;
+}
+
+.result {
+    position: absolute;
+    background-color: white;
+    z-index: 2;
+    width: calc(100vw - 231px);
+}
+
+.kana {
+    position: absolute;
+    left: 400px;
+    z-index: 4;
+}
+
+.inputsta {
+    width: 170px;
+}
+
+#kanatext {
+    margin-top: 5px;
+    width: 220px;
+}
+
+#ptype {
+    width: 50px;
+}
+
+#url {
+    display: none;
+    position: absolute;
+    bottom: 5px;
+    width: 195px;
+    height: 125px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.urlback {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.8rem;
+    cursor: grab;
+}
+
+.urlback:hover {
+    background-color: #54f1a0;
+}
+
+#url2 {
+    position: absolute;
+    left: 400px;
+    top: 210px;
+    z-index: 2;
+}
+
+.kana input[type="button"] {
+    padding-inline: 1px;
+    padding-block: 0.5px;
+}
+
+#textareaurl {
+    width: 211px;
+    height: 45px;
+    resize: none;
+}
+
+.selectline2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 99vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}
+
+.setting {
+    position: absolute;
+    top: 2dvh;
+    left: 2vw;
+    width: 96vw;
+    height: 96dvh;
+    background-color: white;
+    border: 1px solid black;
+    z-index: 10;
+}
+
+.setting_dis {
+    position: absolute;
+    top: -0.5px;
+    right: -0.5px;
+    height: 40px;
+    width: 40px;
+    border: 1px solid black;
+    cursor: grab;
+    z-index: 10;
+    background-color: white;
+}
+
+.setting_dis:hover {
+    background-color: #54f1a0;
+}
+
+h101 {
+    font-size: 130%;
+}
+
+.s90 {
+    font-size:90%;
+}
+
+.s120 {
+    font-size: 120%;
+}
+
+.s130 {
+    font-size: 130%;
+}
+
+#guide {
+    position: absolute;
+    top: 10px;
+    left: 650px;
+    width: 220px;
+    height: 330px;
+    border: 1px solid black;
+    z-index: 1;
+}
+
+.guideline {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, white 0%, rgb(18, 18, 18) 50%, white 100%);
+}
+
+.guidebox {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 28px;
+    background-color: transparent;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.guidebox:hover {
+    background-color: rgba(41, 237, 136, 0.9);
+}
+
+.y_but {
+    position: absolute;
+    width: 30%;
+    height: 21px;
+    top: 4px;
+    border: 1px solid black;
+    background-color: #EFEFEF;
+    text-align: center;
+    cursor: grab;
+}
+
+.y_but:hover {
+    background-color: rgba(41, 237, 136, 0.9);
+}
+
+.y_page {
+    position: absolute;
+    left: 43%;
+    top: 2px;
+}
+
+.member {
+    font-size: 110%;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 185px;
+    height: 200px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.member input[type="number"] {
+    width: 40px;
+}
+
+#member_nyuryoku {
+    display: none;
+
+}
+
+#editbox_dis {
+    background-color: white;
+}
+
+#editbox_dis:hover {
+    background-color: #54f1a0;
+}
+
+@supports(-webkit-touch-callout: none) {
+
+    /* iPhoneの表示のみ指定を上書き */
+    .selectline2 {
+        height: -webkit-fill-available;
+    }
+}
+
+input[type="checkbox"] {
+    margin: 1.5px 1.5px 1.5px 1.5px;
+}
+
+.databoxtable {
+    border-collapse: collapse;
+    border: 1px solid black;
+    border-spacing: 0;
+    vertical-align: top;
+    max-width: calc(96vw - 20px);
+}
+
+.databoxtable td,
+th {
+    border-bottom: 1px solid #333;
+    padding: 1px 2px;
+    line-height: 1.4;
+    letter-spacing: -0.1;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.databoxtable div {
+    max-height: 50px;
+    min-height: 50px;
+}
+
+.fsttd {
+    max-width: 40px;
+    min-width: 38px;
+}
+
+.sectd {
+    max-width: 100px;
+    min-width: 100px;
+}
+
+.thitd {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+    max-width: calc(96vw - 280px);
+    min-width: calc(96vw - 280px);
+}
+
+.btntd {
+    min-width: 88px;
+    max-width: 88px;
+}
+
+.b_te {
+    width: 200px;
+}
+
+#b_sta {
+    width: 250px;
+}
+
+.b_box2 {
+    position: absolute;
+    width: 90vw;
+    height: 94dvh;
+    top: 3dvh;
+    left: 5vw;
+    border: 1px solid black;
+    border-radius: 5px;
+    z-index: 10;
+    background-color: rgba(256, 256, 256, 0.9);
+    display: none;
+}
+
+.infobox {
+    position: absolute;
+    width: 90vw;
+    height: 94dvh;
+    top: 3dvh;
+    left: 5vw;
+    border: 1px solid black;
+    border-radius: 5px;
+    z-index: 10;
+    background-color: rgba(256, 256, 256, 0.96);
+    display: none;
+}
+
+.info_dis {
+    position: absolute;
+    top: -1px;
+    right: -0.5px;
+    height: 40px;
+    width: 40px;
+    border: 1px solid black;
+    cursor: grab;
+    z-index: 10;
+    background-color: rgba(256, 256, 256, 0);
+    border-radius: 5px;
+}
+
+.info_dis:hover {
+    background-color: #54f1a0;
+}
+
+.keiro_sta_input {
+    width: 100px;
+}
+
+.keirobox {
+    position: absolute;
+    width: 96dvw;
+    height: 96dvh;
+    top: 2dvh;
+    left: 2dvw;
+    border: 1px solid black;
+    border-radius: 5px;
+    z-index: 10;
+    background-color: rgba(256, 256, 256, 0.95);
+    display: none;
+}
+
+.keiroinfo2 {
+    position: absolute;
+    margin-top: 2px;
+    height: calc(96dvh - 84px);
+    overflow-y: scroll;
+    border: 1px solid black;
+    left: 3px;
+    width: calc(100% - 6px);
+    border-radius: 4px;
+}
+
+.editbox2 {
+    position: absolute;
+    margin-top: 2px;
+    height: calc(96dvh - 60px);
+    overflow-y: scroll;
+    border: 1px solid black;
+    left: 3px;
+    width: calc(100% - 6px);
+    border-radius: 4px;
+}
+
+.valid_box {
+    display: inline;
+}
+
+.batsumark {
+    position: absolute;
+    width: 42px;
+    height: 3px;
+    background-color: black;
+    top: 18px;
+    left: -0.5px;
+}
+
+.naname1 {
+    transform: rotate(45deg);
+}
+
+.naname2 {
+    transform: rotate(-45deg);
+}
+
+.hosei_checkdiv {
+    position: absolute;
+}
+
+.hosei_box {
+    position: absolute;
+    left: 220px;
+    z-index: 9;
+    display: none;
+}
+
+.gakunyu {
+    position: fixed;
+    width:200px;
+    left:2px;
+    border:1px solid black;
+    border-radius: 4px;
+    padding-bottom:5px;
+    background-color: rgba(256, 256, 256, 0.9);
+    z-index:10;
+    cursor:grab;
+    user-select: none;
+  touch-action: none;
+}
+.gakunyu input[type="number"] {
+    width:80px;
+}
+.gakunyu input[type="text"] {
+    width:80px;
+}
+
+@media screen and (max-width:780px) {
+    .big_display {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .kana {
+        left: 230px;
+        top: auto;
+        bottom: 5px;
+        line-height: 1.41;
+    }
+
+    .inputsta {
+        width: 170px;
+    }
+
+    #kanatext {
+        width: 220px;
+        height: 100px;
+    }
+
+    .line2 {
+        width: 210px;
+    }
+
+    .sta2 {
+        width: 120px;
+    }
+
+    .sta {
+        left: 90px;
+    }
+
+    .result {
+        left: 230px;
+        line-height: normal;
+    }
+
+    #url_ {
+        display: inline;
+    }
+
+    #url2 {
+        display: none;
+    }
+
+    .selectline2 {
+        width: 230px;
+    }
+
+    body {
+        font-size: 100%;
+    }
+
+    #guide {
+        display: inline;
+        left: 230px;
+        width: 140px;
+        background-color: white;
+        margin-top: 16px;
+    }
+
+    .datatojiru {
+        display: none;
+    }
+
+    .valid_box {
+        display: none;
+    }
+
+    .gakunyu {
+        left:230px;
+        width:210px;
+    }
+}
+
+@media screen and (min-width:640px) {
+    .kana {
+        left: 400px;
+        top: 0px;
+        bottom: auto;
+        line-height: 1.41;
+    }
+
+    .inputsta {
+        width: 170px;
+    }
+
+    #kanatext {
+        width: 220px;
+        height: 100px;
+    }
+
+    .line2 {
+        width: 210px;
+    }
+
+    .sta2 {
+        width: 120px;
+    }
+
+    .sta {
+        left: 90px;
+    }
+
+    .result {
+        left: 230px;
+        line-height: normal;
+        width: 400px;
+    }
+
+    #url_ {
+        display: none;
+    }
+
+    #url2 {
+        display: inline;
+    }
+
+    .selectline2 {
+        width: 230px;
+    }
+
+    body {
+        font-size: 100%;
+    }
+
+    .gakunyu {
+        left:400px;
+        width:210px;
+    }
+
+    .keiro_sta_input {
+        width: 120px;
+    }
+}
+
+@media screen and (min-width:645px) {
+    .br-sp {
+        display: none;
+    }
+
+    .keiroinfo2 {
+        height: calc(96dvh - 60px);
+    }
+}
+
+@media screen and (min-width:800px) {
+    .keiro_sta_input {
+        width:150px;
+    }
+}
+
+@media screen and (max-width:420px) {
+    .kana {
+        left: 210px;
+        bottom: 5px;
+        top: auto;
+        line-height: 1.41;
+    }
+
+    .inputsta {
+        width: 105px;
+    }
+
+    #kanatext {
+        width: 142px;
+        height: 40px;
+    }
+
+    .line2 {
+        width: 190px;
+    }
+
+    .sta2 {
+        width: 110px;
+    }
+
+    .sta {
+        left: 80px;
+    }
+
+    .result {
+        left: 210px;
+        line-height: 1.41;
+        width: calc(100vw - 211px);
+    }
+
+    #url_ {
+        display: inline;
+    }
+
+    #url2 {
+        display: none;
+    }
+
+    .selectline2 {
+        width: 210px;
+    }
+
+    body {
+        font-size: 95%;
+    }
+
+    #guide {
+        left: 210px;
+    }
+
+    .hosei_box {
+        left: 200px;
+    }
+
+    .gakunyu {
+        left:2px;
+        width:200px;
+    }  
+} 
+
+.selectline2 select {
+    outline: none;
+    padding: 0;
+    appearance: none;
+    height:18px;
+    color: #333;
+    box-shadow: none;
+    padding: 0 0 0 1.5px;
+    background: #ffffff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 0px top 55%;
+    background-size: 16px 16px;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid #333;
+} .selectline2 select option {
+    background:#f8f8f8;
+} .sest_grid {
+    display: grid;
+    grid-template-columns: 62px 250px;
+    row-gap: 4px;     /* 上下の隙間だけを個別に指定いたします */
+    column-gap: 15px; /* 左右の隙間はゆったりと */
+    align-items: center;
+    line-height: 1.25;
+    margin-left:5px;
+} .sest_stname2 {
+    font-size:90%;
+    grid-column: span 2;
+} .sest_stcode {
+    font-size:110%;
+} .sest_box1 {
+    position: absolute;
+    margin-top: 2px;
+    height: calc(96dvh - 84px);
+    border: 1px solid black;
+    left: 3px;
+    width: calc(100% - 6px);
+    border-radius: 4px;
+    align-content: start;
+} .sest_box2 {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* 行同士の隙間を小さく */
+    height: calc(100% - 40px);
+    border: 1px solid black;
+    left: 3px;
+    width: calc(50% - 8px);
+    border-radius: 4px;
+    align-items: start;
+    overflow-y: scroll;
+} .sest_box21 {
+    left: 1px;
+} .sest_box22 {
+    left:auto;
+    right: 4px;
+} .sest_row {
+    display: grid;
+    grid-template-columns: 4.4rem calc(100% - 4px - 4.4rem); 
+    align-items:start;
+    cursor: pointer;
+    padding: 5px 0;
+    padding-left:4px;
+    transition: background 0.2s;
+    width:100%;
+}
+.sest_row:hover {
+    background-color: #f0f0f0; /* 行全体が反応していることがわかりますわ */
+}
+/* 親コンテナ */
+.search-wrapper {
+    position: relative; /* リストの配置基準になります */
+    max-width: 400px;
+}
+/* 検索候補の箱 */
+.suggestion-box {
+    position: absolute;
+    top: 100%; /* inputのすぐ下 */
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none; /* inputとの境界線をスッキリさせます */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;    /* 最前面へ */
+    max-height: 250px;
+    overflow-y: auto;
+    display: none;    /* 最初は隠しておきます */
+    height:auto;
+}
+
+/* 候補の一つひとつ */
+.suggestion-item {
+    padding: 6px 7.5px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+/* マウスホバー、または選択時 */
+.suggestion-item:hover,
+.suggestion-item.is-selected {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.horizontal-container {
+    display: flex;       /* これが横並びの魔法ですわ */
+    flex-wrap: wrap;
+    align-items: flex-start; /* 上揃えにして、候補リストの出現に備えます */
+    gap: 1px;           /* ボックス同士の隙間をエレガントに空けます */
+}
+/*以下経路保存・読込関連*/
+.db_grid {
+    display: grid;
+    /*grid-template-columns: 62px 250px;*/
+    row-gap: 4px;     /* 上下の隙間だけを個別に指定いたします */
+    column-gap: 15px; /* 左右の隙間はゆったりと */
+    align-items: center;
+    line-height: 1.25;
+} .db_stname2 {
+    font-size:90%;
+    grid-column: span 1;
+    margin-left:2px;
+} .db_stcode {
+    font-size:110%;
+} .db_box1 {
+    position: absolute;
+    margin-top: 2px;
+    height: calc(96dvh - 84px);
+    border: 1px solid black;
+    left: 3px;
+    width: calc(100% - 6px);
+    border-radius: 4px;
+    align-content: start;
+    overflow-y: scroll;
+} .db_box21 {
+    width:calc(100% - 8px);
+    border-radius: 4px;
+    border:1px solid black;
+    margin:4px;
+} #keiro_box .db_box21:nth-child(n + 21) {
+    background-color: rgba(245, 245, 220,0.5);
+}
+.db_box22 {
+    left:auto;
+    right: 4px;
+} .db_row {
+    display: grid;
+    grid-template-columns: calc(100% - 53px) 53px;
+    grid-template-rows: 25px; 
+    align-items:start;
+    cursor: pointer;
+    padding-left:2px;
+    transition: background 0.2s;
+    width:100%;
+}
+.db_row:hover {
+    background-color: #f5f5f5; /* 行全体が反応していることがわかりますわ */
+}
+
+.grid-column-dual {
+    display: contents; /* 親のGridに直接子要素を参加させます */
+}
+
+/* 右側のエリア：2行分をぶち抜いて1つにします */
+.grid-column-single {
+    grid-column: 2;     /* 2列目 */
+    grid-row: 1 / 3;    /* 1行目から2行目までを連結！ */
+    height: 100%;       /* 親の2行分いっぱいに広げます */
+    align-content: center;
+}
+
+.mr_row {
+    display: grid;
+    /*grid-template-columns: 4.4rem calc(100% - 4px - 4.4rem); */
+    align-items:start;
+    cursor: pointer;
+    padding: 2px 0;
+    padding-left:4px;
+    transition: background 0.2s;
+    width:100%;
+}
+
+#mrbox .sest_box2 {
+    height:calc(100% - 80px);
+}
+
+.mr_row:hover {
+    background-color: #f0f0f0;
+}
+
+.db_hstkeiro {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;      /* 垂直方向に配置 */
+    overflow: hidden;                  /* 溢れた部分を隠す */
+    text-overflow: ellipsis;           /* 溢れた部分に「...」を表示 */
+    -webkit-line-clamp: 2;             /* 最大行数を2行に設定 */
+}
+
+.hst_box_btn {
+    text-align:center;
+}
+
+#ppbox input[type=number] {
+    width:100px;
+}
+
+.rrspan {
+    font-size:104%;
+}
