@@ -2083,6 +2083,17 @@
                                     temp.dup = true;
                                 }
                             }
+                        } else if (data2[i].line == "9200") {
+                            if (i > 0 && i < data2.length - 1) {
+                                info.add(0,"日田彦山線ＢＲＴに、通過連絡運輸の設定はありません。");
+                                temp.dup = true;
+                            } else {
+                                let isso = ((i > 0 && data2[i].sta[0][0] == 912913) || (i == 0 && data2[i].sta.at(-1)[0] == 912913)) ? true : false;
+                                if (data2.some(e => ((e.line == "ナカサ") || (e.line == "ニツホ" && e.sta.some(e => (e[0] == 910510 || e[0] == 920572 || e[0] == 920573))) || (isso == false && ((/カコシ|キユシ/.test(e.line)) && e.sta.some(e => e[0] == 930121))) || e.line == "チクホ"))) {
+                                    info.add(0,"連絡運輸区域外を経由しています。");
+                                    temp.dup = true;
+                                }
+                             }
                         }
                         if ("fare" in data2[i] && data2[i].fare != void 0) {
                             temp.i9 = Math.ceil(customround(Math.abs(data2[i].sta[0][4] - data2[i].sta[data2[i].sta.length - 1][4])));
@@ -3325,6 +3336,15 @@
                 else if (ptype == 10 && temp.c.skiro[i][2] == "2200") {
                     temp.sres[1] += Math.floor((Math.floor(temp.c.skiro[i][1] / 20) * 10) * 0.6 / 10) * 10;
                     temp.i12 = Math.floor(temp.c.skiro[i][1] / 20) * 10 - Math.floor((Math.floor(temp.c.skiro[i][1] / 20) * 10) * 0.6 / 10) * 10;
+                } else if (temp.c.skiro[i][2] == "9200") {
+                    if (data2.length == 1 && (ptype == 7 || ptype == 8)) {
+                        if (ptype == 7) temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;
+                        else if (ptype == 8) temp.sres[1] += Math.floor(Math.floor(temp.c.skiro[i][1] / 20) * 10/ 20) * 10;
+                        info.add(0,"BRT線内単独/障割適用")
+                    } else if (ptype == 8 && temp.sres3 > 100) temp.sres[1] += Math.floor(Math.floor(temp.c.skiro[i][1] / 20) * 10/ 20) * 10 - ((data2.length > 1) ? 20 : 0);
+                    else if ((ptype == 1 || ptype == 8 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) || (ptype == 7 && temp.sres3 > 100)) temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10 - ((data2.length > 1) ? 50 : 0);
+                    else temp.sres[1] += temp.c.skiro[i][1] - ((data2.length > 1) ? 100 : 0);
+                    if (data2.length > 1) info.add(0,"乗継割引/大人100円引")
                 } else if (ptype == 1 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) {
                     if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                     else temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;
