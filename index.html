@@ -18,7 +18,7 @@
   　{"@context": "https://schema.org","@type": "WebApplication","name": "ふぁれす(fares/JR運賃計算WEB)","url": "https://tatebori.static.jp/f/","image": "https://tatebori.static.jp/f/img/ogp_image.jpg","description": "JR線普通乗車券の運賃計算に特化したwebアプリです。最長普通乗車券といった複雑な経路や、一部の連絡乗車券にも対応しています。経路の保存/読込機能もあります。"}
   　</script>
     <title>ふぁれす(fares/JR運賃計算WEB)</title>
-    <script src="./data.js?v=20260822"></script>
+    <script src="./data.js?v=20260824"></script>
     <script src="./tfare.js"></script>
     <script src="./henkan.js"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
@@ -1422,7 +1422,7 @@
                 if (k114_tf) return false;
                 console.log("114条適用の可能性あり");
                 if (k114.ok && k114.ok2 && (/2|3|4|5|6|8|11/.test((temp.c.city[0][0][0] ?? 3).toString()))) { //k114_ok2がtrueの場合のみ判定
-                    info.add(0,"規程114条適用の可能あり/マルス非対応のため適用不可");
+                    if (temp.sf[0].length > 2 && temp.sf[0][2] > 20 && temp.sf[1].length > 1 && temp.sf[1][2] > 20) info.add(0,"規程114条適用の可能あり/マルス非対応のため適用不可");
                 } else if (k114.ok) {
                     k114.r = temp.res;
                     k114.t.kana = analy.cre();
@@ -1503,7 +1503,7 @@
                 } else info.add(0, "規程114条適用の可能性あり");
             } else if (!k114_tf2 && !temp.chakueki && data2[0].sta[0][0].toString().length == 6 && temp.sf[1][0] > 90 && temp.sf[0][0] > 90 && (((temp.c.city[3][0][0] != void 0 && temp.c.kiro[0][0] + temp.c.kiro[0][2] > 100 && temp.c.kiro[0][0] + temp.c.kiro[0][2] < 140 && (20 <= temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1] + temp.c.city[3][0][1]) || 20 > temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1] + temp.c.city[3][0][1])) && temp.c.kiro[2][0] > 0 && temp.c.kiro[0][0] + temp.c.kiro[0][1] < 120)) || (temp.c.city[1][0][0] != void 0 && 5 <= temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[1][1][0][0] + temp.c.city[1][1][0][1] + temp.c.city[1][0][1]) && temp.c.kiro[0][0] + temp.c.kiro[0][2] > 200 && temp.c.kiro[0][0] + temp.c.kiro[0][2] < 240))) {
                 if (k114.ok && k114.ok2 && (/2|3|4|5|6|8|11/.test((temp.c.city[1][0][0] ?? 3).toString()))) {
-                    info.add(0,"規程114条適用の可能あり/マルス非対応のため適用不可");
+                    if (temp.sf[0].length > 2 && temp.sf[0][2] > 20 && temp.sf[1].length > 1 && temp.sf[1][2] > 20) info.add(0,"規程114条適用の可能あり/マルス非対応のため適用不可");
                 } else if (!k114.ok) { //k114_okだったもとは
                     info.add(0,"規程114条適用の可能性あり");
                     return false;
