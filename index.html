@@ -2790,9 +2790,9 @@
                     [temp.c.city[1][0], temp.c.city[3][0]] = [[void 0, 0, 0, 0], [void 0, 0, 0, 0]];
                     console.log("強制単駅指定");
                 }
-            } if (taneki[0] || (/2|3|4|6|7/.test(temp.c.city[0][0][0]) && /4|5/.test(ptype)) || (/10|11/.test(temp.c.city[0][0][0]) && /6/.test(ptype))) { //単駅指定
+            } if (taneki[0] || (/^2$|^3$|^4$|^6$|^7$/.test(temp.c.city[0][0][0]) && /^4$|^5$|^11$|^12$/.test(ptype)) || (/10|11/.test(temp.c.city[0][0][0]) && /^6$|^13$/.test(ptype))) { //単駅指定
                 [temp.c.city[0][0],temp.c.city[2][0]] = [[void 0,0,0,0],[void 0,0,0,0]];
-            } if (taneki[1] || (/2|3|4|6|7/.test(temp.c.city[1][0][0]) && /4|5/.test(ptype)) || (/10|11/.test(temp.c.city[2][0][0]) && /6/.test(ptype))) {
+            } if (taneki[1] || (/^2$|^3$|^4$|^6$|^7$/.test(temp.c.city[1][0][0]) && /^4$|^5$|^11$|^12$/.test(ptype)) || (/10|11/.test(temp.c.city[1][0][0]) && /^6$|^13$/.test(ptype))) {
                 [temp.c.city[1][0],temp.c.city[3][0]] = [[void 0,0,0,0],[void 0,0,0,0]];
             } 
             temp.c.sf = [data3[0],data3[data3.length - 1]];
@@ -2810,26 +2810,21 @@
             //console.log(JSON.parse(JSON.stringify(temp.c.city)));
             if (temp.c.city[1][0][2] == void 0) temp.c.city[1][0].push(0);
 
-            let tt3 = {fst:false,fin:false,both:false,fsty:false,finy:false,bothy:false};
-            if (temp.c.city[0][0][0] === undefined) {
-                
-            }
-            tt3.ok0 = (temp.c.city[0][0][0] === undefined) ? false : true;
-            if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
-            tt3.ok1 = (temp.c.city[1][0][0] === undefined) ? false : true;
-            if (temp.c.city[1][0][2] == undefined) temp.c.city[1][0].push(0);
-            tt3.ok2 = (temp.c.city[2][0][0] === undefined) ? false : true;
-            if (temp.c.city[2][0][2] == undefined) temp.c.city[2][0].push(0);
-             if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);
-            tt3.ok3 = (temp.c.city[3][0][0] === undefined) ? false : true;
+            let tt3 = {fst:false,fin:false,both:false,fsty:false,finy:false,bothy:false,ok0:true,ok1:true,ok2:true,ok3:true};
+            if (temp.c.city[0][0][0] === undefined) tt3.ok0 = false;
+            else if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
+            if (temp.c.city[1][0][0] === undefined) tt3.ok1 =  false;
+            else if (temp.c.city[1][0][2] == undefined) temp.c.city[1][0].push(0);
+            if (temp.c.city[2][0][0] === undefined) tt3.ok2 = false;
+            else if (temp.c.city[2][0][2] == undefined) temp.c.city[2][0].push(0);
+            if (temp.c.city[3][0][0] === undefined) tt3.ok3 = false;
+            else if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);
             if (tt3.ok0 && tt3.ok1 && customround(temp.c.city[1][1][0][0] + temp.c.city[1][1][0][1] - temp.c.city[0][1][0][0] - temp.c.city[0][1][0][1] + temp.c.city[0][0][1] + temp.c.city[0][0][2] + temp.c.city[1][0][1] + temp.c.city[1][0][2]) > 200) tt3.both = true;
             if (tt3.ok2 && tt3.ok3 && temp.c.city[2][0][0] == 3 && temp.c.city[3][0][0] == 3 && customround(temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1] - temp.c.city[2][1][0][0] - temp.c.city[2][1][0][1] + temp.c.city[3][0][1] + temp.c.city[3][0][2] + temp.c.city[2][0][1] + temp.c.city[2][0][2]) > 100) tt3.bothy = true;
             if (tt3.ok0 && customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] - temp.c.city[0][1][0][0] - temp.c.city[0][1][0][1] + temp.c.city[0][0][1] + temp.c.city[0][0][2]) > 200) tt3.fst = true;
             if (tt3.ok2 && temp.c.city[2][0][0] == 3 && customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] - temp.c.city[2][1][0][0] - temp.c.city[2][1][0][1] + temp.c.city[2][0][1]) > 100)  tt3.fsty = true;
             if (tt3.ok1 && customround(temp.c.city[1][0][1] + temp.c.city[1][0][2] + temp.c.city[1][1][0][0] + temp.c.city[1][1][0][1]) > 200) tt3.fin = true;
             if (tt3.ok3 && temp.c.city[3][0][0] == 3 && customround(temp.c.city[3][0][1] + temp.c.city[3][0][2] + temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1]) > 100) tt3.finy = true;
-            console.log(tt3,tt3.fst);
-            console.log(customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] - temp.c.city[0][1][0][0] - temp.c.city[0][1][0][1] + temp.c.city[0][0][1] + temp.c.city[0][0][2]))
             let tt = -1;
             if (tt3.both) tt = 0;
             else if (tt3.fin) tt = 2;
@@ -2840,7 +2835,7 @@
             if (temp.c.city[0][0][0] === undefined && temp.c.city[1][0][0] === undefined);
             else if (tt == 1 || tt == 12) {
                 console.log("発駅？");
-                if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
+                //if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
                 if (tt == 1) {
                     if (temp.c.cityh[temp.c.city[0][0][0]] < 3) {
                         temp.i7 = temp.c.city[0][0][0];
@@ -2880,8 +2875,8 @@
                 }
             } else if (tt == 2 || tt == 13) { //着駅に特定都区市内制度を適用する場合
                 console.log("着駅?");
-                if (temp.c.city[1][0][2] == undefined) temp.c.city[1][0].push(0);
-                if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);
+                //if (temp.c.city[1][0][2] == undefined) temp.c.city[1][0].push(0);
+                //if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);
                 if (tt == 2) {
                     if (temp.c.cityh[temp.c.city[1][0][0]] < 3) {
                         temp.i7 = temp.c.city[1][0][0];
@@ -2938,10 +2933,10 @@
                 }
             }*/
             else { //発着駅両方に特定都区市内制度を適用する場合
-                if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
+                /*if (temp.c.city[0][0][2] == undefined) temp.c.city[0][0].push(0);
                 if (temp.c.city[1][0][2] == undefined) temp.c.city[1][0].push(0);
                 if (temp.c.city[2][0][2] == undefined) temp.c.city[2][0].push(0);
-                if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);
+                if (temp.c.city[3][0][2] == undefined) temp.c.city[3][0].push(0);*/
                 if (tt == 0) {
                     if (temp.c.cityh[temp.c.city[1][0][0]] < 3) {
                         temp.i7 = temp.c.city[0][0][0];
