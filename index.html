@@ -18,7 +18,7 @@
   　{"@context": "https://schema.org","@type": "WebApplication","name": "ふぁれす(fares/JR運賃計算WEB)","url": "https://tatebori.static.jp/f/","image": "https://tatebori.static.jp/f/img/ogp_image.jpg","description": "JR線普通乗車券の運賃計算に特化したwebアプリです。最長普通乗車券といった複雑な経路や、一部の連絡乗車券にも対応しています。経路の保存/読込機能もあります。"}
   　</script>
     <title>ふぁれす(fares/JR運賃計算WEB)</title>
-    <script src="./data.js?v=20260825"></script>
+    <script src="./data.js?v=20260829"></script>
     <script src="./tfare.js"></script>
     <script src="./henkan.js"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
@@ -120,7 +120,7 @@
             <div>社線営業㌔:<a id="skiro">-</a>km</div>
             <div>合計営業㌔:<a id="akiro">-</a>km</div>
             <div>運賃:<a id="fare">-</a>円</div>
-            <div class="valid_box">
+            <div class="valid_box smode2">
                 <div>有効期間:<a id="validdays_main">-</a>日間</div>
                 <div>途中下車:<a id="gesha_main">-</a></div>
             </div>
@@ -149,11 +149,12 @@
         </div>
     </div>
     <div class="kana">
-        <div>疑似カナコード入力</div>
+        <div class="smode">
+        <div id="kana2st" onclick='smode.f.do("kana2","")'>疑似カナコード入力</div>
         <div>発駅:<input class="inputsta" id="kanafst" type="text"></div>
         <div>着駅:<input class="inputsta" id="kanafin" type="text"></div>
-        <textarea id="kanatext" class="click_class"></textarea>
-        <div><input type="button" value="反　映" onclick="f.kana()"> <input type="button" value="全選択" class="click_class" onclick="f.kana_select()"> <input type="button" value="発着反転" onclick="f.reverse()"> <input type="button" value="URL出力" onclick="url.f.exp()"></div>
+        <textarea id="kanatext" class="click_class"></textarea></div>
+        <div><span class="smode"><input type="button" value="反　映" onclick="f.kana()"> <input type="button" value="全選択" class="click_class" onclick="f.kana_select()"> </span><input type="button" value="発着反転" onclick="f.reverse()"> <input type="button" value="URL出力" onclick="url.f.exp()"></div>
     </div>
     <div id="url_">
         <div id="url">
@@ -241,7 +242,7 @@
                     <div><label><input id="sets_tkp" type="checkbox"  value="" onclick="setsf.wr('tkp',this.checked)">経路表示やカナコード出力等で、マルス準拠優先</label></div>
                 </div>
                 <div><h101>特殊経路編集</h101></div>
-                <div style="font-size:105%;margin-left:10px;"><input type="button" value="接続駅編集" onclick="edit.f.box.open()"></div>
+                <div style="font-size:105%;margin-left:10px;"><input type="button" value="接続駅編集" onclick="edit.f.box.open()"> <input type="button" value="経路途中編集" onclick="edit.f.box2.open()"></div>
                 <div><h101>未登録社線・金額入力</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
                     <div>
@@ -258,6 +259,9 @@
                 <div style="font-size:105%;margin-left:10px;">
                     <div><label><input id="checkbox_ham_menu" type="checkbox" checked>ﾊﾝﾊﾞｰｶﾞｰﾒﾆｭｰを表示</label></div>
                     <div><label><input id="shkey_ok" type="checkbox" value="" onclick="shkey.f(this.checked)" checked>ショートカットキー</label></div>
+                    <div><label><input id="checkbox_smode_valid" type="checkbox" onchange="smode.f.do('valid',this.checked ? 'open' : 'close')">有効期間/途中下車可否を常に表示</label></div>
+                    <div><label><input id="checkbox_smode_kana" type="checkbox" onchange="smode.f.do('kana',!this.checked ? 'open' : 'close')">疑似カナ入力を非表示</label></div>
+                    <div><label><input id="checkbox_smode_kana2" type="checkbox" onchange="setsf.wr('smode_kana2',this.checked)">疑似カナコード入力拡大（文字部分をタップしてください。）</label></div>
                 </div>
                 <div><h101>補正禁止指定</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
@@ -297,6 +301,8 @@
                     <div><input type="button" value="全選択" onclick='document.getElementById("nyuryokumoji_text").select()'> <input type="button" value="コピー" onclick='navigator.clipboard.writeText(document.getElementById("nyuryokumoji_text").value)'></div>
                     <div><input type="button" value="簡易料金計算" onclick="rff.dom.open()"></div>
                 </div>
+                <div><h101>現在のVersion</h101></div>
+                <div style="font-size:105%;margin-left:10px;">現在：ふぁれす v.1.0.0（2026/08/31更新）<br>※中の人がここの部分の更新をサボっている場合があります。</div>
                 <div><h101>リンク類</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
                     <div><a href="javascript:explain.f.dom.open()">操作説明</a></div>
@@ -4040,6 +4046,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                 let data23,data24;
                 let v2 = ((i - i % 2) * 0.5 + 1);
                 let st2,st3;
+                //console.log(v[i],i);
                 if (v[i].typec() == 2) {
                     temp.d2.i = [sta.skana[v[i]].sta.findIndex(e => e[0] == v[i - 1] || e[6] == v[i - 1]),sta.skana[v[i]].sta.findIndex(e => e[0] == v[i + 1] || e[6] == v[i + 1])];
                     if (temp.d2.i[0] > temp.d2.i[1]) {
@@ -4198,6 +4205,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                     if (i < temp.cd2.length - 1 && sta.alltkanam.indexOf(temp.cd2[i + 1]) != -1) {
                         for (let i2 = 0;i2 < sta.alltkana.length;i2++) {
                             if (sta.tkana[sta.alltkana[i2]].kana == temp.cd2[i + 1] && sta.tkana[sta.tkana[sta.alltkana[i2]].pair].none == temp.cd2[i]) {
+                                //console.log(...temp.cd);
                                 if (tkp2.includes(temp.cd2[i + 1])) {
                                     if (i > 1 && sta.tkana[sta.alltkana[i2]].b != temp.cd2[i - 1] && !sta.shinka.includes(temp.cd2[i - 1])) temp.cd.push(temp.cd2[i + 1]);
                                     else temp.cd.push(sta.alltkana[i2]);
@@ -4209,6 +4217,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                 if ((tkp[0] < tkp[2] && tkp[1] < tkp[2]) || (tkp[0] > tkp[2] && tkp[1] > tkp[2])) {
                                 temp.i19 = true;
                                 temp.cd.push(sta.alltkana[i2]);
+                            　　//console.log(...temp.cd);
                                 break;}
                             }
                         }
@@ -4226,6 +4235,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                 //console.log(tkp3,sta.tkana[sta.alltkana[i2]].b == temp.cd2[i + 1]);
                                 if (!(tkp3 && sta.tkana[sta.alltkana[i2]].b != temp.cd2[i + 1])) tkp = [sta.kana[temp.cd2[i + 1]].sta.findIndex(e => e[0] == temp.cd2[i]),sta.kana[temp.cd2[i + 1]].sta.findIndex(e => e[0] == sta.tkana[sta.alltkana[i2]].none),sta.kana[temp.cd2[i + 1]].sta.findIndex(e => e[0] == temp.cd2[i + 2])];
                                 if (!(tkp3 && sta.tkana[sta.alltkana[i2]].b != temp.cd2[i + 1]) && (tkp[0] < tkp[1] && tkp[0] < tkp[2]) || (tkp[0] > tkp[1] && tkp[0] > tkp[2])) {
+                                    //console.log(...temp.cd)
                                     if (temp.cd2[i - 2] == sta.tkana[sta.alltkana[i2]].none) {
                                        if (temp.cd.at(-1) == temp.cd2[i - 1]) temp.cd.splice(temp.cd.length - 1,1,sta.tkana[sta.alltkana[i2]].pair,sta.alltkana[i2]);
                                        else if (temp.cd.at(-1) == sta.tkana[sta.alltkana[i2]].pair) temp.cd.push(sta.alltkana[i2]);
@@ -4234,10 +4244,11 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                         if (temp.cd[temp.cd.length - 1] == temp.cd2[i - 1]) temp.cd[temp.cd.length - 1] = sta.alltkana[i2];
                                         else temp.cd.push(sta.alltkana[i2]);
                                     }
-                                    console.log(...temp.cd);
+                                    //console.log(...temp.cd);
                                     break;
                                 } else if (tkp3){
                                     //console.log(temp.cd2[i - 1],[...temp.cd2],[...temp.cd])
+                                    //console.log(...temp.cd);
                                     if (temp.cd.at(-1) == sta.tkana[sta.alltkana[i2]].pair || (temp.cd.length > 1 && temp.cd.at(-1).length == 5 && temp.cd.at(-2) == sta.tkana[sta.alltkana[i2]].pair)) {
                                         if (!(i < 3 || sta.tkana[sta.alltkana[i2]].b == temp.cd2[i - 3])) {
                                             temp.cd[temp.cd.length - 1] = temp.cd2[i - 1];
@@ -4245,10 +4256,11 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                             let tkp = new Array(3);
                                             if (temp.cd2.length > 3) tkp = [sta.kana[temp.cd2[i - 3]].sta.findIndex(e => e[0] == temp.cd2[i - 4]),sta.kana[temp.cd2[i - 3]].sta.findIndex(e => e[0] == sta.tkana[sta.tkana[sta.alltkana[i2]].pair].none),sta.kana[temp.cd2[i - 3]].sta.findIndex(e => e[0] == temp.cd2[i - 2])];
                                             if (temp.cd2.length > 2 && ((tkp[0] < tkp[2] && tkp[1] < tkp[2]) || (tkp[0] > tkp[2] && tkp[1] > tkp[2]))) {
-                                               temp.cd.push(sta.alltkana[i2]);
+                                               if (temp.cd.length > 0 && temp.cd.at(-1).toString().at(-1) == "B") temp.cd.splice(temp.cd.length - 1,0,sta.alltkana[i2]);
+                                               else temp.cd.push(sta.alltkana[i2]);
                                             } else if (temp.cd.length > 1 && temp.cd.at(-1).length == 5 && temp.cd.at(-2) == sta.tkana[sta.alltkana[i2]].pair) temp.cd.splice(temp.cd.length - 2,1,temp.cd2[i - 1]);
                                             else temp.cd[temp.cd.length - 1] = temp.cd2[i - 1];
-                                            console.log(...temp.cd);
+                                            //console.log(...temp.cd);
                                         }
                                     } else {
                                         if (temp.cd.at(-1) == temp.cd2[i - 1]) temp.cd.pop();
@@ -4258,10 +4270,12 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                         else temp.cd.push(sta.alltkana[i2]);
                                     }
                                 } else {
+                                    //console.log(...temp.cd);
                                     if (temp.cd.at(-1) == temp.cd2[i - 1]);
-                                    else if (temp.cd.at(-1) == sta.tkana[sta.alltkana[i2]].pair);
+                                    else if (temp.cd.at(-1) == sta.tkana[sta.alltkana[i2]].pair) temp.cd.push(sta.alltkana[i2]);
                                     else if (tkp2.includes(temp.cd2[i - 1])) temp.cd.push(sta.alltkana[i2]);
                                     else temp.cd.push(temp.cd2[i - 1]);
+                                    //console.log(...temp.cd);
                                     break;
                                 } break;
                             }
@@ -4303,7 +4317,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                             if (temp.cd.length > 0 && temp.cd.at(-1) == "カンサ");
                             else temp.cd.push("カンサ");
                             if (!ima2[1]) {
-                                if (temp.cd2[i - 1] == 620832) temp.cd.pop();
+                                if (temp.cd2[i - 1] == 620832 && (i - 3 < 0)) temp.cd.pop();
                                 temp.cd.push("オオサ2");
                             }
                         } else if (ima2[1]) {
@@ -4321,6 +4335,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                         if (temp.cd2[i + 1] != 910107) temp.cd.push("ニツホ");
                     } else if (temp.cd2[i] == "カコシ" && temp.cd.at(-1) == temp.cd2[i]);
                     else temp.cd.push(temp.cd2[i]);
+                    //console.log(...temp.cd);
                 }
             }
             temp.yosan = 0;
@@ -5089,7 +5104,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             }
             localStorage.setItem("shkey", shkey.tf);
             sets = localStorage.getItem("sets") ?? "und";
-            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false};
+            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"close",smode_valid:"close",smode_kana2:false};
             else {
                 try {
                     sets = JSON.parse(sets);
@@ -5100,11 +5115,22 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (!"mr_seni" in sets || sets.mr_seni == void 0) sets.mr_seni = true;
             if (!"dst" in sets || sets.dst == void 0) sets.dst = false;
             if ("tkp" in sets && sets.tkp == true) sets.tkp = true;
+            if (!"smode_kana" in sets || sets.smode_kana == void 0) sets.smode_kana = "open";
+            if (!"smode_valid" in sets || sets.smode_valid == void 0) sets.smode_valid = "close";
+            if ("smode_kana2" in sets && sets.smode_kana2 == true) sets.smode_kana2 = true;
             localStorage.setItem("sets",JSON.stringify(sets));
             if (!sets.r) document.getElementById("sets_r").checked = false;
             if (!sets.mr_seni) document.getElementById("mr_seni").checked = false;
             if (sets.dst == true) document.getElementById("sets_dst").checked = true;
             if (sets.tkp == true) document.getElementById("sets_tkp").checked = true;
+            if (sets.smode_kana == "close") {
+            document.getElementById("checkbox_smode_kana").checked = true;
+                smode.f.do("kana","close");
+        }
+            if (sets.smode_valid == "open") {
+        document.getElementById("checkbox_smode_valid").checked = true;
+                smode.f.do("valid","open")
+        } if (sets.smode_kana2 == true) document.getElementById("checkbox_smode_kana2").checked = true;
         }; setsf = {};
         setsf.wr = (v,v2) => {
             sets[v] = v2;
@@ -5171,6 +5197,32 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             document.getElementById("getinfo").checked = document.getElementById("getinfo2").checked;
             if (getinfo.tf) url.subject2 = encodeURI(`${getinfo.f.cre()}\n`);
             else url.subject2  = "";
+        };
+        let smode = {f:{}};
+        smode.f.do = (v2,v) => {
+            if (v2 == "kana") {
+                Array.from(document.querySelectorAll(".smode")).forEach((e,ir) => {
+                    if (v == "open" && Array.from(e.classList).includes("nokana")) e.classList.remove("nokana");
+                    else if (v == "close" && Array.from(e.classList).includes("nokana") == false) e.classList.add("nokana");
+                })
+                setsf.wr("smode_kana",v);
+            } else if (v2 == "valid") {
+                Array.from(document.querySelectorAll(".smode2")).forEach((e,ir) => {
+                    if (v == "close" && Array.from(e.classList).includes("apvalid")) e.classList.remove("apvalid");
+                    else if (v == "open" && Array.from(e.classList).includes("apvalid") == false) e.classList.add("apvalid");
+                })
+                setsf.wr("smode_valid",v);
+            } else if (v2 == "kana2") {
+                let kanalist = document.querySelectorAll(".kana")[0].classList;
+                //console.log(kanalist)
+                if (Array.from(kanalist).includes("kana2")) {
+                    kanalist.remove("kana2");
+                    document.getElementById("kana2st").style.color = "";
+                } else {
+                    kanalist.add("kana2");
+                    document.getElementById("kana2st").style.color = "rgb(47,148,92)";
+                }
+            }
         };
     </script>
     <script type="module" src="databox.js?v=20260711"></script>

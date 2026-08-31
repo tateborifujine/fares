@@ -477,6 +477,10 @@ th {
         line-height: 1.41;
     }
 
+    .nokana {
+        display:none;
+    }
+
     .inputsta {
         width: 170px;
     }
@@ -533,6 +537,10 @@ th {
 
     .valid_box {
         display: none;
+    }
+
+    .apvalid {
+        display:inline;
     }
 
     .gakunyu {
@@ -624,6 +632,10 @@ th {
         bottom: 5px;
         top: auto;
         line-height: 1.41;
+    }
+    
+    .nokana {
+        display:none;
     }
 
     .inputsta {
@@ -898,4 +910,22 @@ th {
 
 .rrspan {
     font-size:104%;
+}
+
+.kana2.kana .inputsta {
+    width:200px;
+}
+
+.kana2.kana #kanatext {
+    min-width:250px;
+    max-width:80dvw;
+    height:auto;
+    max-height:400px;
+    min-height:100px;
+    field-sizing: content;
+}
+.kana2.kana {
+    background-color:white;
+    right:10px;
+    left:auto;
 }
