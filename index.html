@@ -4674,6 +4674,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                 }
             } else {
                 console.log(guide.s_el);
+                if (!shkey.tf) return false;//ガイド入力も、ショートカットキー可否プラグでも判定
                 if (event.key === 'ArrowRight' && guide.s_el == 0) guide.p_c(1);
                 else if (event.key === 'ArrowLeft' && guide.s_el == 0) guide.p_c(0);
                 if (/[1234567890]/.test(event.key) && guide.s_el == 0) {
@@ -5097,7 +5098,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                 //tofullscreen();
             }*/
             shkey.tf = localStorage.getItem("shkey") ?? true;
-            if (shkey.tf == "true") shkey.tf = true;
+            if (shkey.tf != "false") shkey.tf = true;
             else {
                 shkey.tf = false;
                 document.getElementById("shkey_ok").checked = false;
