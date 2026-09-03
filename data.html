@@ -119,7 +119,7 @@
         for (let i = 0; i < sta.allkana.length; i++) {
             temp.e.i1 = document.createElement("option");
             temp.e.i1.value = sta.allkana[i];
-            if (sta.allskana2.includes(sta.allkana[i])) temp.e.i1.innerHTML = sta.skana[sta.allkana[i]].name2;
+            if (sta.allskana.includes(sta.allkana[i])) temp.e.i1.innerHTML = sta.skana[sta.allkana[i]].name2;
             else temp.e.i1.innerHTML = sta.kana[sta.allkana[i]].name2;
             document.getElementById("sta_select").appendChild(temp.e.i1);
         }; view.f.get = (m, v) => {
