@@ -18,13 +18,13 @@
   　{"@context": "https://schema.org","@type": "WebApplication","name": "ふぁれす(fares/JR運賃計算WEB)","url": "https://tatebori.static.jp/f/","image": "https://tatebori.static.jp/f/img/ogp_image.jpg","description": "JR線普通乗車券の運賃計算に特化したwebアプリです。最長普通乗車券といった複雑な経路や、一部の連絡乗車券にも対応しています。経路の保存/読込機能もあります。"}
   　</script>
     <title>ふぁれす(fares/JR運賃計算WEB)</title>
-    <script src="./data.js?v=20260903"></script>
+    <script src="./data.js?v=20260910"></script>
     <script src="./tfare.js"></script>
     <script src="./henkan.js?v=20260831"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
     <script src="./auto.js?v=20260810"></script>
     <script src="./edit.js"></script>
-    <script src="./iframe.js?v=20260903"></script>
+    <script src="./iframe.js?v=20260908"></script>
     <script src="./hosei.js"></script>
     <script src="./gakunyu.js"></script>
     <script src="./rff.js"></script>
@@ -303,7 +303,10 @@
                 </div>
                 <div><h101>現在のVersion</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
-                    現在：ふぁれす v.1.0.2（2026/09/03最終更新）<br>
+                    現在：ふぁれす v.1.0.5（2026/09/10最終更新）<br>
+                    ・関西本線河曲、加佐登、井田川の各駅の収容漏れを修正（v1.0.5:2026/09/10）<br>
+                    ・平成筑豊鉄道を追加（v.1.0.4:2026/09/08）<br>
+                    ・直前に規程第114条適用区間の計算をした際に、そのINFOデータが勝手に引き継がれるバグと、特定都区市内が適用されることで幹在別線（仙台・一ノ関間などのほう）区間で別線が成立しなくなる場合に、重複駅表示を出すよう修正（v1.0.3:2026/09/05）<br>
                     ・山形鉄道フラワー長井線を追加（v1.0.2:2026/09/03）<br>
                     ・会津鉄道＆野岩鉄道を追加（v1.0.1:2026/09/02）<br>
                     ・バージョン管理（？）を開始（v1.0.0:2026/08/31？）<br>
@@ -316,6 +319,7 @@
                     <div><a href='javascript:iframe.f.set("./data.html","./data.html?temp=none","内部データ閲覧",true)'>内部データ閲覧</a></div>
                     <div><a href='javascript:iframe.f.set("./kasan.html","./kasan.html?temp=none","JR東/2026運賃改定後加算運賃閲覧",true);'>加算運賃閲覧</a></div>
                     <div><a href='javascript:rr.f.dom.open();'>簡易連絡運輸範囲情報閲覧</a></div>
+                    <div><a href="./2025/" target="_blank">2026年運賃改定以前のver.</div>
                     <div><a href=".../" target="_blank">本サイトトップページ</a></div>
                 </div>
             </div>
@@ -797,6 +801,7 @@
         let f = {fare:{kansen:{}},dom:{}};
         let temp = {d2:'',option:'',select:"",sf:[[0,""],[0,""]],i33:[0,0],hatsueki:false,k89k:0};
         temp.sf2 = [[139901,"札幌市内"],[239901,"仙台市内"],[449901,"東京都区内"],[449902,"東京山手線内"],[449903,"横浜市内"],[539901,"名古屋市内"],[619902,"京都市内"],[619901,"大阪市内"],[619903,"神戸市内"],[809901,"広島市内"],[919901,"北九州市内"],[919902,"福岡市内"],[619910,"大阪・新大阪"]];
+        temp.sfcity = [130124,231035,440101,440101,440114,530116,610116,610130,610145,800613,910106,910127];
         let data2 = [];//data2には入力された経路等の情報を入力
         let [data3,data4] = [[],[]];//経由した駅を入力、data3はそのまま、data4は新幹線の場合在来線の駅を入力
         let data5 = {};//data5は経由駅入力
@@ -1509,7 +1514,7 @@
                         }
                     }
                     [temp.sf, temp.c.kiro, data2, info.v] = [JSON.parse(JSON.stringify(k114.t.sf)), JSON.parse(JSON.stringify(k114.t.kiro)), JSON.parse(JSON.stringify(k114.t.d2)), JSON.parse(JSON.stringify(k114.t.info))];
-                    if (k114.t.tf == true) {
+                    if (k114.ok && k114.t.tf == true) {
                         info.add(0, `規程114条適用(比較:${k114.sta[1]}/△${k114.sta[0]})`);
                         if (k114.sta[2]) info.add(0,"ただし比較先重複注意");
                     } else temp.res = k114.r;
@@ -1520,9 +1525,10 @@
             } else if (!k114_tf2 && !temp.chakueki && data2[0].sta[0][0].toString().length == 6 && temp.sf[1][0] > 90 && temp.sf[0][0] > 90 && (((temp.c.city[3][0][0] != void 0 && temp.c.kiro[0][0] + temp.c.kiro[0][2] > 100 && temp.c.kiro[0][0] + temp.c.kiro[0][2] < 140 && (20 <= temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1] + temp.c.city[3][0][1]) || 20 > temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[3][1][0][0] + temp.c.city[3][1][0][1] + temp.c.city[3][0][1])) && temp.c.kiro[2][0] > 0 && temp.c.kiro[0][0] + temp.c.kiro[0][1] < 120)) || (temp.c.city[1][0][0] != void 0 && 5 <= temp.c.kiro[0][0] + temp.c.kiro[0][1] - (temp.c.city[1][1][0][0] + temp.c.city[1][1][0][1] + temp.c.city[1][0][1]) && temp.c.kiro[0][0] + temp.c.kiro[0][2] > 200 && temp.c.kiro[0][0] + temp.c.kiro[0][2] < 240))) {
                 if (k114.ok && k114.ok2 && (/2|3|4|5|6|8|11/.test((temp.c.city[1][0][0] ?? 3).toString()))) {
                     if (temp.sf[0].length > 2 && temp.sf[0][2] > 20 && temp.sf[1].length > 1 && temp.sf[1][2] > 20) info.add(0,"規程114条適用の可能あり/マルス非対応のため適用不可");
-                } else if (!k114.ok) { //k114_okだったもとは
+                } else if (k114_tf) return false;
+                else if (!k114_ok) { //k114_okだったもとは
                     info.add(0,"規程114条適用の可能性あり");
-                    return false;
+                    //return false;
                 } else {
                     k114.r = temp.res;
                     k114.t2.kana = edit.f.kana.cre();
@@ -1538,7 +1544,7 @@
                     analy.f(k114.t2.d2[0].sta[0][0], k114.t2.d2.at(-1).sta.at(-1)[0], k114.t2.kana.slice(1,-1).join("-"),0,false,false);
                     k114.t2.tf = true;
                     [temp.sf, temp.c.kiro, data2, info.v] = [JSON.parse(JSON.stringify(k114.t2.sf)), JSON.parse(JSON.stringify(k114.t2.kiro)), JSON.parse(JSON.stringify(k114.t2.d2)), JSON.parse(JSON.stringify(k114.t2.info))];
-                    if (k114.t.tf) {
+                    if (k114.ok && k114.t.tf) {
                         info.add(0, `規程114条適用(比較:${k114.sta[1]}/△${k114.sta[0]})`);
                         if (k114.sta[2]) info.add(0,"ただし比較先重複注意");
                     } else temp.res = k114.r;
@@ -1692,7 +1698,8 @@
                 k70:[],//[70条区間入口,出口,出入り回数,[京葉線八丁堀〜東京間通過かつ東京〜品川間新幹線乗車かつ品川〜代々木間山手線乗車]]
                 k70h:0,
                 k70p:[false],//[京葉線八丁堀〜東京間通過かつ東京〜品川間新幹線乗車かつ品川〜代々木間山手線乗車]
-                k89:false
+                k89:false,
+                //sfcity22:-1,
             };
             //temp.i = {kiro:{eigyo:0,calc:0},district:0};
             [data3,data4,temp.toukachange] = [[],[],false];
@@ -1978,7 +1985,14 @@
                             info.add(0,"綾瀬発着は連絡運輸範囲外");
                             temp.dup = true;
                         }
-                    } else if (data2[i].line == "5566" || data2[i].line == "5570") {
+                    } else if (data2[i].line == "5566" || data2[i].line == "5570") { //しなの鉄道
+                        if (i > 0 && i < data2.length - 1 && data2[i].line == "5570" && ((data2[i].sta[0][0] == 6872107 && data2[i].sta.at(-1)[0] == 6872115) || (data2[i].sta[0][0] == 6872115 && data2[i].sta.at(-1)[0] == 6872107))) {
+                            temp.dup = true;
+                            info.add(0,"豊野-妙高高原間に通過連絡運輸の設定はありません。");
+                        } else if ((i == 0 && data2.length > 2 && data2[i].line == "5570" && data2[i + 1].line == "5572" && data2[i + 2].line == "シンエ") || (i == data2.length - 1 && data2.length > 2 && data2[i].line == "5570" && data2[i - 1].line == "5572" && data2[i - 2].line == "シンエ")) {
+                            temp.dup = true;
+                            info.add(0,"妙高高原-直江津間の通過連絡運輸は、北しなの線長野-妙高高原間も通過する場合に限ります。");
+                        }
                         if (i + 2 < data2.length && (data2[i + 2].line == "5556" || data2[i + 2].line == "5570")) continue;
                         else if (i >= 2 && (data2[i - 2].line == "5556" || data2[i - 2].line == "5570")) {
                             temp.i91 = customround(Math.abs(data2[i].sta[0][4] - data2[i].sta.at(-1)[4]) + Math.abs(data2[i - 2].sta[0][4] - data2[i - 2].sta.at(-1)[4]));
@@ -1989,6 +2003,26 @@
                         if (temp.i9 < 12) temp.i3 = data.s["5566"].find(e => e[0] <= temp.i9 && temp.i9 <= e[1])[2];
                         else temp.i3 = Math.ceil(customround(((Math.ceil(customround(Math.ceil(customround(20.05 * temp.i9) / 10) * 10)) * 1.1) / 10))) * 10;
                         temp.c.skiro.push([temp.i91,temp.i3,data2[i].line]);
+                    } else if (data2[i].line == 9581) {
+                        if (data2[i].sta[0][4] < 0 && data2[i].sta.at(-1)[4] > 0) temp.i91 = customround(Math.abs(data2[i].sta[0][4]) + Math.abs(data2[i].sta.at(-1)[4] - 9.8));
+                        else if (data2[i].sta[0][4] > 0 && data2[i].sta.at(-1)[4] < 0) temp.i91 = customround(Math.abs(data2[i].sta.at(-1)[4]) + Math.abs(data2[i].sta[0][4] - 9.8));
+                        else temp.i91 = customround(Math.abs(data2[i].sta[0][4] - data2[i].sta.at(-1)[4]));
+                        temp.i9 = Math.ceil(temp.i91);
+                        temp.c.skiro.push([temp.i91,data.s["9581"].find(e => e[0] <= temp.i9 && temp.i9 <= e[1])[2],data2[i].line]);
+                        if (data2.length == 1);
+                        else if (data2.length > 2 && i > 0 && data2.length - 1 > i) {
+                            temp.dup = true;
+                            info.add(0,"平成筑豊鉄道に通過連絡運輸の設定はありません。");
+                        } else {
+                            let setsu = [0,[]];
+                            if (i == 0) setsu = [data2[i].sta.at(-1)[0],data2[i].sta[0]];
+                            else setsu = [data2[i].sta[0][0],data2[i].sta.at(-1)];
+                            if (setsu == 8541101);
+                            else if (((setsu[0] == 8541301 || setsu[0] == 8541109) && setsu[1][4] < 0) || (setsu[0] == 8541204 && setsu[1][4] > 9.8)) {
+                                temp.dup = true;
+                                info.add(0,"社線側連絡運輸範囲外です。");
+                            }
+                        }
                     } else {
                         if (data2[i].line == "6208" && (data2[i].sta[0][0] == 7811721 || data2[i].sta.at(-1)[0] == 7811721) && i > 0 && i < data2.length - 1) {
                             //ハピラインふくい　敦賀・越前花堂/福井間の通過連絡運輸禁止
@@ -2631,7 +2665,10 @@
                 temp.k70dc = temp.k70dc.flat();
                 if (temp.k70dc.length == [...new Set(temp.k70dc)].length) {
                     for (let i11 = 0;i11 < temp.c.k70.length;i11++) {
-                        if (temp.c.k70[i11][0][0] == undefined || temp.c.k70[i11][1][0] == undefined) continue;
+                        if (temp.c.k70[i11][0][0] == undefined || temp.c.k70[i11][1][0] == undefined) {
+                            continue;
+                            
+                        }
                         let i2 = temp.c.k70[i11][3];
                         if (i2 == void 0) continue; //data.k70に登録がない70条区間の出入り口を利用する場合
                         temp.k70b = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
@@ -2796,10 +2833,11 @@
                                 data5[data4[i][0].toString()]++;
                             }
                         }
-                    } else if (i == data4.length - 1) { //単なる終着駅で重複が発生していた場合  
+                    } else if (i == data4.length - 1) { //単なる終着駅で重複が発生していた場合
                       if (data2.length < 2) break;
                       else if (sta.shinka.some(e => e == data2.at(-1).line || e == data2.at(-2).line)) {
                         for (let i8 = 0;i8 < sta.bk.length;i8++) { //規則第16条の2で別線とは見なせない区間
+                          
                           if (sta.bk[i8][0] == data2.at(-1).sta.at(-1)[0] && data2.at(-1).sta[0][0] == sta.bk[i8][1]) {
                               if (data2.at(-2).sta.some(e => e[0] == sta.bk[i8][0])) {
                                 console.log("名古屋・尾張一宮・米原・岐阜羽島・名古屋のような経路が構成されているため発売不可・重複駅扱い");
@@ -2816,7 +2854,7 @@
                             break;
                           }
                         }
-                      } temp.bkobe = false; 
+                        } temp.bkobe = false; 
                         if (data2.length < 3);
                         else if (610155 == data2.at(-1).sta.at(-1)[0]) {
                           if (data2.at(-1).sta[0][0] == 610609) {
@@ -3198,6 +3236,37 @@
                     }
                 }
             }
+            /*if (temp.c.k70.length > 0 && temp.c.k70.at(-1)[0][0] != void 0 && temp.c.k70.at(-1)[1][0] == void 0 && temp.sf[1][2] > 20)  {
+                let i11 = temp.c.k70.length - 1;
+                let i2 = dst(temp.c.k70[i11][0][0],temp.sf10[1][0]);
+                let i2d = customround(i2.distance);
+                let i2sd = [[],[],[]] 
+                if (temp.c.k70.length > 1 && temp.c.k70[0][0][0] == void 0 && temp.c.k70[0][1][0] != void 0) {
+                   let i2s = data3.findIndex(e => e[0] == temp.c.k70[0][1][0]);
+                   i2sd[0] = [...new Array(i2s)].map((_,ir) => data3[ir][0]);
+                } if (temp.c.k70.length > 1 && temp.c.k70[0][0][0] != void 0 && temp.c.k70[0][1][0] == void 0) {
+                   let i2s = data3.findIndex(e => e[0] == temp.c.k70[0][1][0]);
+                   i2sd[2] = [...new Array(i2s)].map((_,ir) => data3[ir][0]);
+                   
+                   //console.log(i2s2,i2.stations,getIsDuplicate(i2s2,i2.stations))
+                } if (getIsDuplicate([...i2sd[0],...i2sd[1],...i2sd[2]],i2.stations).length > 0) info.add(0,"重複あり");
+                //if (i2 == void 0) continue; //data.k70に登録がない70条区間の出入り口を利用する場合
+                temp.k70b = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+                for (let i3 = 0;i3 < 7;i3++) {
+                    temp.k70b[i3][0] = - temp.c.k70[i11][0][1][i3][0] + temp.c.kiro[i3][0];
+                    temp.k70b[i3][1] = - temp.c.k70[i11][0][1][i3][1] + temp.c.kiro[i3][1];
+                    temp.k70b[i3][2] = - temp.c.k70[i11][0][1][i3][2] + temp.c.kiro[i3][2];
+                }
+                if (customround(temp.k70b[2][0]) == i2d) info.add(0,`70条区間最短経路入力済`);
+                else if (temp.k70b[3][0] <= 0) {
+                    temp.c.kiro[2][0] -= temp.k70b[2][0];
+                    temp.c.kiro[2][0] += i2d;
+                    temp.c.kiro[0][0] -= temp.k70b[2][0];
+                    temp.c.kiro[0][0] += i2d;
+                    info.add(0,`70条区間補正(${i11}/${temp.c.k70[i11][0][0]}-${temp.sf10[1][0]})`);
+                }
+            }*/
+            
             temp.c.t4 = Object.keys(temp.c.t3);
             for (let i = 0;i < temp.c.t4.length;i++) {
                 if (((temp.sf[0][2] < 20 && temp.sf[0].length > 1 && Array.isArray(temp.c.t3[temp.c.t4[i]][7]) && (temp.c.t3[temp.c.t4[i]][7][0] == temp.sf[0][2] || (temp.c.t3[temp.c.t4[i]][7][0] == 3 && temp.sf[0][2] == 2)) && data5[temp.c.t3[temp.c.t4[i]][0]] < 3) || (temp.sf[1][2] < 20 && temp.sf[1].length > 1 && Array.isArray(temp.c.t3[temp.c.t4[i]][7]) && (temp.c.t3[temp.c.t4[i]][7][0] == temp.sf[1][2] || (temp.c.t3[temp.c.t4[i]][7][0] == 3 && temp.sf[1][2] == 2)) && data5[temp.c.t3[temp.c.t4[i]][0]] < 3)) && toku3.includes(temp.c.t3[temp.c.t4[i]][0])) {
@@ -3206,6 +3275,38 @@
                 } if (data5[temp.c.t3[temp.c.t4[i]][0]] < 2) continue;
                 temp.dup = true;
                 info.add(0,`経路上に重複駅(△${temp.c.t3[temp.c.t4[i]][0]}/${temp.c.t3[temp.c.t4[i]][1]}駅)あり`);
+            }
+            if (data2.length < 2);
+            else if (Array.isArray(data2.at(-1).sta.at(-1)[7]) && temp.sf[1][2] == data2.at(-1).sta.at(-1)[7][0] && temp.sfcity[data2.at(-1).sta.at(-1)[7][0]] != data2.at(-1).sta.at(-1)[0]) {
+                //console.log(273783)
+                if (sta.shinka.some(e => e == data2.at(-1).line || e == data2.at(-2).line)) {
+                    for (let i8 = 0;i8 < sta.bk.length;i8++) {
+                        if (sta.bk[i8][0] == temp.sfcity[data2.at(-1).sta.at(-1)[7][0]] && data2.at(-1).sta[0][0] == sta.bk[i8][1]) temp.c.sfcity22 = 1;
+                        else if (sta.bk[i8][1] == temp.sfcity[data2.at(-1).sta.at(-1)[7][0]] && data2.at(-1).sta[0][0] == sta.bk[i8][0]) temp.c.sfcity22 = 0;
+                        if (temp.c.sfcity22 >= 0) {
+                            if (data2.at(-2).sta.some(e => e[0] == sta.bk[i8][temp.c.sfcity22])) {
+                                console.log("名古屋・尾張一宮・米原・岐阜羽島・名古屋のような経路が構成されているため発売不可・重複駅扱い");
+                                info.add(0,`経路上に重複駅(△${data2.at(-1).sta.at(-1)[0]}/${data2.at(-1).sta.at(-1)[1]}駅)あり`);
+                                temp.dup = true;
+                            } break;
+                        }
+                    }
+                }
+            } else if (Array.isArray(data2[0].sta[0][7]) && temp.sf[0][2] == data2[0].sta[0][7][0] && temp.sfcity[data2[0].sta[0][7][0]] != data2[0].sta[0][0]) {
+                //console.log(273784)
+                if (sta.shinka.some(e => e == data2[0].line || e == data2[1].line)) {
+                    for (let i8 = 0;i8 < sta.bk.length;i8++) {
+                        if (sta.bk[i8][0] == temp.sfcity[data2[0].sta[0][7][0]] && data2[0].sta.at(-1)[0] == sta.bk[i8][1]) temp.c.sfcity22 = 1;
+                        else if (sta.bk[i8][1] == temp.sfcity[data2[0].sta[0][7][0]] && data2[0].sta.at(-1)[0] == sta.bk[i8][0]) temp.c.sfcity22 = 0;
+                        if (temp.c.sfcity22 >= 0) {
+                            if (data2[1].sta.some(e => e[0] == sta.bk[i8][temp.c.sfcity22])) {
+                                console.log("名古屋・尾張一宮・米原・岐阜羽島・名古屋のような経路が構成されているため発売不可・重複駅扱い");
+                                info.add(0,`経路上に重複駅(△${data2[0].sta[0][0]}/${data2[0].sta[0][1]}駅)あり`);
+                                temp.dup = true;
+                             } break;
+                        }
+                    }
+                }
             }
             temp.res = '';
             temp.i5 = '';
@@ -3431,7 +3532,7 @@
                 } else if (ptype == 7 && temp.sres3 > 100) { //障害者割引(大人)の場合
                     if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                     else temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;//それ以外の場合、端数切り上げ
-                } else if (ptype == 7 && data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$/.test(data2[0].line)) {
+                } else if (ptype == 7 && data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$|^9581$/.test(data2[0].line)) {
                     temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;
                     if (data2[0].line == "6185" && temp.sres[1] < 210) temp.sres[1] = 210;
                     info.add(0,"社線単独/障割適用");
@@ -3442,7 +3543,7 @@
                         else temp.sres[1] += Math.round(Math.round(temp.c.skiro[i][1] / 20) * 10 / 20) * 10;//それ以外の場合、端数切り上げ
                     } else {
                         if (temp.c.skiro[i][2] == "6201" || temp.c.skiro[i][2] == "2200") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
-                        else if (data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$/.test(data2[0].line)) {
+                        else if (data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$|^9581$/.test(data2[0].line)) {
                             temp.sres[1] += Math.round(Math.round(temp.c.skiro[i][1] / 20) * 10 / 20) * 10;
                             if (data2[0].line == "6185" && temp.sres[1] < 210) temp.sres[1] = 110;
                             info.add(0,"社線単独/小児障割適用");
@@ -4422,7 +4523,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                 } else if (/ヨサンム|ヨサンイ/.test(temp.cd[i])) {
                     temp.cd[i] = "ヨサン";
                 } else if (/^オサヒ$/.test(temp.cd[i])) {
-                    console.log(JSON.stringify(temp.cd));
+                    //console.log(JSON.stringify(temp.cd));
                     temp.osahi++;
                     temp.osahi3 = [];
                     temp.osahi2 = data2.filter((e) => e.line == "オサヒ")[temp.osahi - 1];
