@@ -240,6 +240,7 @@
                     </div>
                     <div><label><input id="sets_dst" type="checkbox"  value="" onclick="setsf.wr('dst',this.checked)">大都市近郊区間内完結の場合自動最短経路補正</label></div>
                     <div><label><input id="sets_tkp" type="checkbox"  value="" onclick="setsf.wr('tkp',this.checked)">経路表示やカナコード出力等で、マルス準拠優先</label></div>
+                    <div><label><input id="sets_k160" type="checkbox"  value="" onclick="setsf.wr('k160',this.checked)">旅客営業規則第160条第1項の選択乗車を前提として補正を適用する（同選択乗車中は、途中下車できないことにご注意ください。ただし、基準規程第157条の定めるものを除く。）</label></div>
                 </div>
                 <div><h101>特殊経路編集</h101></div>
                 <div style="font-size:105%;margin-left:10px;"><input type="button" value="接続駅編集" onclick="edit.f.box.open()"> <input type="button" value="経路途中編集" onclick="edit.f.box2.open()"></div>
@@ -303,7 +304,8 @@
                 </div>
                 <div><h101>現在のVersion</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
-                    現在：ふぁれす v.1.0.5（2026/09/10最終更新）<br>
+                    現在：ふぁれす v.1.0.6（2026/09/12最終更新）<br>
+                    ・旅客営業規則第160条第1項の選択乗車を前提とした70条区間内最短経路自動補正を可能にしました。（この画面上部の特殊設定より、当該設定にチェックを入れる必要があります。）（v1.0.6:2026/09/12）<br>
                     ・関西本線河曲、加佐登、井田川の各駅の収容漏れを修正（v1.0.5:2026/09/10）<br>
                     ・平成筑豊鉄道を追加（v.1.0.4:2026/09/08）<br>
                     ・直前に規程第114条適用区間の計算をした際に、そのINFOデータが勝手に引き継がれるバグと、特定都区市内が適用されることで幹在別線（仙台・一ノ関間などのほう）区間で別線が成立しなくなる場合に、重複駅表示を出すよう修正（v1.0.3:2026/09/05）<br>
@@ -3235,37 +3237,81 @@
                         }
                     }
                 }
-            }
-            /*if (temp.c.k70.length > 0 && temp.c.k70.at(-1)[0][0] != void 0 && temp.c.k70.at(-1)[1][0] == void 0 && temp.sf[1][2] > 20)  {
-                let i11 = temp.c.k70.length - 1;
-                let i2 = dst(temp.c.k70[i11][0][0],temp.sf10[1][0]);
-                let i2d = customround(i2.distance);
+            } 
+            if (sets.k160 && temp.c.k70.length > 0 && (temp.c.k70[0][0][0] == void 0 || temp.c.k70.at(-1)[1][0] == void 0)) {
+                temp.c.k70s = [[],[]];
                 let i2sd = [[],[],[]] 
-                if (temp.c.k70.length > 1 && temp.c.k70[0][0][0] == void 0 && temp.c.k70[0][1][0] != void 0) {
-                   let i2s = data3.findIndex(e => e[0] == temp.c.k70[0][1][0]);
-                   i2sd[0] = [...new Array(i2s)].map((_,ir) => data3[ir][0]);
-                } if (temp.c.k70.length > 1 && temp.c.k70[0][0][0] != void 0 && temp.c.k70[0][1][0] == void 0) {
-                   let i2s = data3.findIndex(e => e[0] == temp.c.k70[0][1][0]);
-                   i2sd[2] = [...new Array(i2s)].map((_,ir) => data3[ir][0]);
-                   
-                   //console.log(i2s2,i2.stations,getIsDuplicate(i2s2,i2.stations))
-                } if (getIsDuplicate([...i2sd[0],...i2sd[1],...i2sd[2]],i2.stations).length > 0) info.add(0,"重複あり");
-                //if (i2 == void 0) continue; //data.k70に登録がない70条区間の出入り口を利用する場合
-                temp.k70b = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
-                for (let i3 = 0;i3 < 7;i3++) {
-                    temp.k70b[i3][0] = - temp.c.k70[i11][0][1][i3][0] + temp.c.kiro[i3][0];
-                    temp.k70b[i3][1] = - temp.c.k70[i11][0][1][i3][1] + temp.c.kiro[i3][1];
-                    temp.k70b[i3][2] = - temp.c.k70[i11][0][1][i3][2] + temp.c.kiro[i3][2];
+                if (temp.c.k70.length > 0 && temp.c.k70[0][0][0] == void 0 && temp.c.k70[0][1][0] != void 0 && temp.sf[0][2] > 20) {
+                    temp.c.k70s[0] = dst(temp.sf10[0][0],temp.c.k70[0][1][0]);
+                    i2sd[0] = temp.c.k70s[0].stations;
+                } if (temp.c.k70.length > 1 && temp.c.k70[0][0][0] == void 0 && temp.c.k70[0][1][0] != void 0) {
+                   for (let i23 = 0;i23 < temp.c.k70.length;i23++) {
+                       if (temp.c.k70[i23][3] != void 0 && typeof temp.c.k70[i23][3] == 'number') {
+                           i2sd[1] = [...data.k70[temp.c.k70[i23]][4]];
+                       }
+                   }
+                } if (temp.c.k70.length > 0 && temp.c.k70.at(-1)[0][0] != void 0 && temp.c.k70.at(-1)[1][0] == void 0 && temp.sf[1][2] > 20) {
+                　　temp.c.k70s[1] = dst(temp.c.k70.at(-1)[0][0],temp.sf10[1][0]);
+                    i2sd[2] = temp.c.k70s[1].stations;
+                } //console.log(i2sd)                                                                                         
+                if (new Set([...i2sd[0],...i2sd[1],...i2sd[2]]).size != [...i2sd[0],...i2sd[1],...i2sd[2]].length);// info.add(0,"重複あり");
+                else {
+                temp.k70b2 = [[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]]];
+                //console.log(JSON.stringify(temp.sf));
+                if (i2sd[0].length > 0 && temp.sf[0][2] > 20) {
+                    let i2d = customround(temp.c.k70s[0].distance);
+                    for (let i3 = 0;i3 < 7;i3++) {
+                        temp.k70b2[0][i3][0] = temp.c.k70[0][1][1][i3][0];
+                        temp.k70b2[0][i3][1] = temp.c.k70[0][1][1][i3][1];
+                        temp.k70b2[0][i3][2] = temp.c.k70[0][1][1][i3][2];
+                    }
+                    if (customround(temp.k70b2[0][2][0]) == i2d) ;//info.add(0,`70条区間最短経路入力済`);
+                    else if (temp.k70b2[0][3][0] <= 0) {
+                        temp.c.kiro[2][0] -= temp.k70b2[0][2][0];
+                        temp.c.kiro[2][0] += i2d;
+                        temp.c.kiro[0][0] -= temp.k70b2[0][2][0];
+                        temp.c.kiro[0][0] += i2d;
+                        info.add(0,`70条区間補正(発駅方/${temp.c.k70[0][1][0]}-${temp.sf10[0][0]})`);
+                    }
+                } else if (temp.sf[0][2] == 3) {
+                    if (temp.c.city[2][2] == 442203) {
+                        info.add(0,"70条区間/発駅方/赤羽線経由を王子経由に補正");
+                        temp.c.kiro[0][0] -= 4.6;
+                        temp.c.kiro[2][0] -= 4.6;
+                    } else if (temp.c.city[2][2] == 441001) {
+                        info.add(0,"70条区間/発駅方/秋葉原経由を馬喰町経由に補正");
+                        temp.c.kiro[0][0] -= 0.6;
+                        temp.c.kiro[2][0] -= 0.6;
+                    }
                 }
-                if (customround(temp.k70b[2][0]) == i2d) info.add(0,`70条区間最短経路入力済`);
-                else if (temp.k70b[3][0] <= 0) {
-                    temp.c.kiro[2][0] -= temp.k70b[2][0];
-                    temp.c.kiro[2][0] += i2d;
-                    temp.c.kiro[0][0] -= temp.k70b[2][0];
-                    temp.c.kiro[0][0] += i2d;
-                    info.add(0,`70条区間補正(${i11}/${temp.c.k70[i11][0][0]}-${temp.sf10[1][0]})`);
+                if (i2sd[2].length > 0 && temp.sf[1][2] > 20) {
+                    let i2d = customround(temp.c.k70s[1].distance);
+                    for (let i3 = 0;i3 < 7;i3++) {
+                        temp.k70b2[1][i3][0] = - temp.c.k70.at(-1)[0][1][i3][0] + temp.c.kiro[i3][0];
+                        temp.k70b2[1][i3][1] = - temp.c.k70.at(-1)[0][1][i3][1] + temp.c.kiro[i3][1];
+                        temp.k70b2[1][i3][2] = - temp.c.k70.at(-1)[0][1][i3][2] + temp.c.kiro[i3][2];
+                    }
+                    if (customround(temp.k70b2[1][2][0]) == i2d) ;//info.add(0,`70条区間最短経路入力済`);
+                    else if (temp.k70b2[1][3][0] <= 0) {
+                        temp.c.kiro[2][0] -= temp.k70b2[1][2][0];
+                        temp.c.kiro[2][0] += i2d;
+                        temp.c.kiro[0][0] -= temp.k70b2[1][2][0];
+                        temp.c.kiro[0][0] += i2d;
+                        info.add(0,`70条区間補正(着駅方/${temp.c.k70.at(-1)[0][0]}-${temp.sf10[1][0]})`);
+                    }
+                } else if (temp.sf[1][2] == 3) {
+                    if (temp.c.city[3][2] == 442203) {
+                        info.add(0,"70条区間/着駅方/赤羽線経由を王子経由に補正");
+                        temp.c.kiro[0][0] -= 4.6;
+                        temp.c.kiro[2][0] -= 4.6;
+                    } else if (temp.c.city[3][2] == 441001) {
+                        info.add(0,"70条区間/着駅方/秋葉原経由を馬喰町経由に補正");
+                        temp.c.kiro[0][0] -= 0.6;
+                        temp.c.kiro[2][0] -= 0.6;
+                    }
                 }
-            }*/
+                }
+            }
             
             temp.c.t4 = Object.keys(temp.c.t3);
             for (let i = 0;i < temp.c.t4.length;i++) {
@@ -5271,7 +5317,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             }
             localStorage.setItem("shkey", shkey.tf);
             sets = localStorage.getItem("sets") ?? "und";
-            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false};
+            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false,k160:false};
             else {
                 try {
                     sets = JSON.parse(sets);
@@ -5285,11 +5331,13 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (!"smode_kana" in sets || sets.smode_kana == void 0) sets.smode_kana = "open";
             if (!"smode_valid" in sets || sets.smode_valid == void 0) sets.smode_valid = "close";
             if ("smode_kana2" in sets && sets.smode_kana2 == true) sets.smode_kana2 = true;
+            if (!"k160" in sets || sets.k160 == void 0) sets.k160 = false;
             localStorage.setItem("sets",JSON.stringify(sets));
             if (!sets.r) document.getElementById("sets_r").checked = false;
             if (!sets.mr_seni) document.getElementById("mr_seni").checked = false;
             if (sets.dst == true) document.getElementById("sets_dst").checked = true;
             if (sets.tkp == true) document.getElementById("sets_tkp").checked = true;
+            if (sets.k160 == true) document.getElementById("sets_k160").checked = true;
             if (sets.smode_kana == "close") {
             document.getElementById("checkbox_smode_kana").checked = true;
                 smode.f.do("kana","close");
