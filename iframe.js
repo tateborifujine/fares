@@ -44,7 +44,7 @@ rr.f.main = (v2) => {
     for (let i3 = 0;i3 < rks2.length;i3++) {
         //let rks = sta.skana2[v].sta.toString();
         let rks = rks2[i3];
-        rr.t.s.push(`＊<span class="rrspan">${auto.f.stc(rks)[1]}接続</span>＊`);
+        rr.t.s.push(`＊<span class="rrspan">${auto.f.stc(rks)[1]}接続</span>＊（${sta.allskana2.find(e => sta.skana2?.[e]?.code == v && sta.skana2?.[e]?.sta == rks) ?? ""}）`);
         let rk = Object.keys(sta.skana[v][rk2][rks]);
         rk.sort((x, y) => rr.o.indexOf(x) - rr.o.indexOf(y));
         console.log(rk)
@@ -89,7 +89,7 @@ rr.f.main = (v2) => {
         if (typeof rr.biko[v] === "object" && typeof rr.biko[v].fin === "string") {
             rr.t.s.push(`備考：${rr.biko[v].fin}`);
         }
-        
+    rr.t.s.unshift(`ふぁれす登録社線コード：${v}`);   
     return rr.t.s.join("<br>");}
     catch (e) {
         console.error(e);
