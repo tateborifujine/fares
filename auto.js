@@ -355,26 +355,37 @@ auto.f.ex = (fst, fin) => {
     else auto.f.ex3(document.getElementById("keiro_fst").value, document.getElementById("keiro_fin").value, document.getElementById("keiro_keiyusta").value);
 }; auto.f.kouza = (fst,fin) => {
     atem.data2 = JSON.parse(JSON.stringify(data2));
-    if (fst.toString().types != 0) fst = auto.f.stc(fst)[0];
-    if (fin.toString().types != 0) fin = auto.f.stc(fin)[0];
+    if (fst === "") fst = 999999;
+    else if (fin === "") fin = 999999;
+    if (fst.toString().types() != 0) fst = auto.f.stc(fst)[0];
+    if (fin.toString().types() != 0) fin = auto.f.stc(fin)[0];
     fst -= 0;
     fin -= 0;
     if (fst.toString().types() == 0 && fin.toString().types() == 0) {
         console.log(fst,fin,356);
+        if (fst === 999999 && fin === 999999) {
+            document.getElementById("keiroinfo").innerHTML = "候補が見つかりませんでした。ごめんなさい。";
+            return 0;
+        } else if (fst === 999999) fst = "";
+        else if (fin === 999999) fin = "";
         getkouza(fst,fin)
         .then(r => {
+            console.log(r);
             if (r.length == 0) {
                 document.getElementById("keiroinfo").innerHTML = "候補が見つかりませんでした。ごめんなさい。";
             } else {
-                console.log(r);
+                //console.log(r);
                 auto.r2 = [];
                 atem.dom = [];
+                if (fst == "" || fin == "") r = sortgr(r,(fst == "") ? "fst" : "fin");
+                else r.sort((a, b) => a.num - b.num);//経路番号順にソート
+                let kzarr = ["","幹","在"];
                 for (let i = 0;i < r.length;i++) {
                     try {
                         //console.log(r[i].kana);
-                        analy.f(r[i].fst,r[i].fin,r[i].kana,1,false,false);
+                        analy.f(r[i].fst,r[i].fin,r[i].kana,1,false,true); //yosan_tfはtrue
                         calc2(1);
-                        atem.dom.push(`<tr onclick="auto.f.load('${r[i].fst}','${r[i].fin}','${r[i].kana}')"><td>経${r[i].num}</td><td>${customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.sres[0])}</td><td>${temp.res}</td><td>${r[i].keiro}</td></tr>`);
+                        atem.dom.push(`<tr onclick="auto.f.load('${r[i].fst}','${r[i].fin}','${r[i].kana}')">${(fst == "") ? `<td>${auto.f.stc(r[i].fst)[1]}</td>` : ((fin == "") ? `<td>${auto.f.stc(r[i].fin)[1]}</td>` : "")}<td>経${r[i].num}</td><td>${kzarr[r[i].kanzai]}</td><td>${customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.sres[0])}</td><td>${temp.res}</td><td>${r[i].keiro}</td></tr>`);
                     } catch (e) {
                         console.error(e);
                         console.log(i,r[i].num);
@@ -383,24 +394,24 @@ auto.f.ex = (fst, fin) => {
                 atem.dom = `<table>${atem.dom.join("")}</table>`;
                 document.getElementById("keiroinfo").innerHTML = atem.dom;
             }
-     /*else {
-        for (let i = 0; i < r.length; i++) {
-            //console.log(r[i]);
-            if (Array.isArray(r[i])) r[i] = r[i][1];
-            analy.f(fst, fin, r[i], 1, false, false);
-            calc2(1);
-            if (temp.dup) continue;
-            atem.kanacre = analy.cre();
-            atem.expkeiyu = exp.keiyu(atem.kanacre).join("・");
-            if (/新幹線・(上野|熊谷|本庄早稲田)・新幹線|(東京|上野|大宮)・新幹線・(大宮|上野|東京)/.test(atem.expkeiyu)) continue;
-            else if (/内浦湾線・函館線・(内浦湾線|千歳線)/.test(atem.expkeiyu)) continue;
-            atem.dom.push(`<tr onclick="auto.f.load('${fst}','${fin}','${atem.kanacre.join("-")}')"><td>${customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.sres[0])}</td><td>${temp.res}</td><td>${atem.expkeiyu}</td></tr>`);
-        } */
         })
     } else {
         document.getElementById("keiroinfo").innerHTML = "候補が見つかりませんでした。ごめんなさい。";
     }
 };
+function sortgr(list, groupKey) {
+  //const listWithId = list.map((item, idx) => ({ ...item, _originalIndex: idx }));
+  const grouped = Object.groupBy(list, (item) => item[groupKey]);
+  for (const key in grouped) {
+    grouped[key].sort((a, b) => a.num - b.num);
+  }
+  const restored = Object.values(grouped)
+    .flat()
+  //  .sort((a, b) => a._originalIndex - b._originalIndex);
+  //restored.forEach(item => delete item._originalIndex);
+  return restored;
+}
+
 sta.allkana_s = sta.allkana2.slice(0,sta.allkana2.findIndex(e => e == "シンカ"));//新幹線を除くJR線のすべてのカナコード
 auto.f.stc = (v) => {
     if (v == "") return 0;

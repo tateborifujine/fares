@@ -168,7 +168,33 @@ async function savekeirodata2(itemId, content) {
 
 // グローバル関数として定義
 window.getkouza = async function(fst, fin) {
+  if (fin === "") {
+      const { data, error } = await supabase
+    .from('kouza')
+    .select('*')
+    .eq('fst', fst)
+    //.eq('fin', fin);
+
+  if (error) {
+    console.error('Error:', error);
+    return null;
+  } return data;
+  } else if (fst === "" ) {
   const { data, error } = await supabase
+    .from('kouza')
+    .select('*')
+    //.eq('fst', fst)
+    .eq('fin', fin);
+
+  if (error) {
+    console.error('Error:', error);
+    return null;
+  } return data;
+
+  return data; // 一致した行を返す
+      }
+    else {
+        const { data, error } = await supabase
     .from('kouza')
     .select('*')
     .eq('fst', fst)
@@ -177,7 +203,6 @@ window.getkouza = async function(fst, fin) {
   if (error) {
     console.error('Error:', error);
     return null;
-  }
-
-  return data; // 一致した行を返す
+  } return data;
+    }
 };
