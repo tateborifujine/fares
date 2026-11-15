@@ -18,7 +18,7 @@
   　{"@context": "https://schema.org","@type": "WebApplication","name": "ふぁれす(fares/JR運賃計算WEB)","url": "https://tatebori.static.jp/f/","image": "https://tatebori.static.jp/f/img/ogp_image.jpg","description": "JR線普通乗車券の運賃計算に特化したwebアプリです。最長普通乗車券といった複雑な経路や、一部の連絡乗車券にも対応しています。経路の保存/読込機能もあります。"}
   　</script>
     <title>ふぁれす(fares/JR運賃計算WEB)</title>
-    <script src="./data.js?v=20261113"></script>
+    <script src="./data.js?v=20261115"></script>
     <script src="./tfare.js?v=20261113"></script>
     <script src="./henkan.js?v=20260831"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
@@ -307,7 +307,8 @@
                 </div>
                 <div><h101>現在のVersion</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
-                    現在：ふぁれす v1.0.18(2026/11/13最終更新）<br>
+                    現在：ふぁれす v1.0.19(2026/11/15最終更新）<br>
+                    ・東秋留、猊鼻渓、門静の各駅の収容ミスのほか、一部駅の事務管理コード設定ミスを修正しました。（v1.0.19:2026/11/15）<br>
                     ・いくつかの致命的バグを、再度修正しました。（v1.0.18:2026/11/13）<br>
                     ・いくつかの致命的バグを修正しました。（v1.0.17:2026/11/12）<br>
                     ・営業キロ、換算キロの設定ミスを多数修正しました。（v1.0.16改:2026/11/11）<br>
@@ -1190,7 +1191,7 @@
             }
         };f.dom.valid2 = () => {
             temp.i56 = f.valid();
-            if (temp.i56[0] == "" || temp.i56[0] == "-") document.getElementById("validdays_main").innerHTML = document.getElementById("gesha_main") = "-";
+            if (temp.i56[0] == "" || temp.i56[0] == "-") document.getElementById("validdays_main").innerHTML = document.getElementById("gesha_main").innerHTML = "-";
             else {
                 document.getElementById("validdays_main").innerHTML = `${temp.i56[0]}`;
                 if (temp.i56[2]) document.getElementById("gesha_main").innerHTML = "可";
