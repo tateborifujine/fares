@@ -16,7 +16,7 @@ li a {
     padding: 4px;
     margin-left: 4px;
     font-size: 16px;
-    color: #464646;
+    color: light-dark(#464646,#fff);
     display: block;
     text-decoration: none;
     text-align: left;
@@ -37,7 +37,7 @@ li a {
     transition: all .3s;
     position: absolute;
     height: 2px;
-    background-color: #333;
+    background-color: light-dark(#333,#eee);
     width: 100%;
     z-index: 10;
     left: 0px;
@@ -79,12 +79,12 @@ li a {
 nav .open {
     margin-left: 0.5rem;
     margin-right:0.5rem;
-    border:1px solid black;
+    border:1px solid light-dark(black,white);
 }
 
 #header-menu {
     position: fixed;
-    background-color: white;
+    background-color: light-dark(white,#121212);
     width: 120px;
     border-radius: 8px;
     margin-left: 0.5rem;
@@ -98,7 +98,7 @@ ul {
 .header-menu-menu {
     font-size: 140%;
     color: #46c985;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid light-dark(black,white);
 }
 
 .header-div1 {
@@ -112,8 +112,8 @@ ul {
     width: 16px;
     height: 13.333333333333333px;
     padding: 10px;
-    border: 1px solid black;
-    background-color: white;
+    border: 1px solid light-dark(black,white);
+    background-color: light-dark(white,#121212);
     border-radius: 6px;
 }
 

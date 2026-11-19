@@ -821,7 +821,7 @@ auto.f.line = (i) => {
     } document.getElementById("sest_sta2").innerHTML = atem.line.str;
     sest_sta1.getElementsByClassName("sest_row")[atem.selectstcode[0]].style.backgroundColor = ""; //デフォルト値に戻す
     atem.selectstcode[0] = i;
-    sest_sta1.getElementsByClassName('sest_row')[i].style.backgroundColor = "#54F1A0";
+    sest_sta1.getElementsByClassName('sest_row')[i].style.backgroundColor = "light-dark(#54F1A0,#20A35F)";
 }
 function ho(str) { //HiraganaOnly
     const hiraganaRegex = /^[ぁ-んー]*$/;
@@ -1037,7 +1037,7 @@ window.addEventListener('load',function() {
                         mr.te.ns20 = i2 - 1;
                     }
                     mr.te.i10 += `
-                        <div class="mr_row" tabindex="0" data-ls="${row.dataset.ls}" data-code="${mr.te[rowls][rowId].options[i2].value}" ${mr.te[rowls][rowId].options[i2].selected ? `style="background-color:rgba(41,237,136,0.9)"` : ""}>
+                        <div class="mr_row" tabindex="0" data-ls="${row.dataset.ls}" data-code="${mr.te[rowls][rowId].options[i2].value}" ${mr.te[rowls][rowId].options[i2].selected ? `style="background-color:light-dark(rgba(41, 237, 136,0.9),rgba(33,178,103,0.9))"` : ""}>
                             <div class="sest_stcode">${mr.te[rowls][rowId].options[i2].innerHTML}</div>
                         </div>`;
                 }
@@ -1045,7 +1045,7 @@ window.addEventListener('load',function() {
             try {
                 if (mr.te.ns2 === "");
                 else document.querySelector("#mr_sta1").getElementsByClassName("mr_row")[mr.te.ns2].style.backgroundColor = "";
-                document.querySelector("#mr_sta1").getElementsByClassName("mr_row")[rowId2].style.backgroundColor = "rgba(41, 237, 136, 0.9)";
+                document.querySelector("#mr_sta1").getElementsByClassName("mr_row")[rowId2].style.backgroundColor = "light-dark(rgba(41, 237, 136,0.9),rgba(33,178,103,0.9))";
             } catch (e) {
                 console.log(e);
             }
@@ -1107,7 +1107,7 @@ window.addEventListener('load',function() {
             try {
                 if (mr.te.ns20 === "");
                 else document.querySelector("#mr_sta2").getElementsByClassName("mr_row")[rowId2].style.backgroundColor = "";
-                document.querySelector("#mr_sta2").getElementsByClassName("mr_row")[rowId].style.backgroundColor = "rgba(41, 237, 136, 0.9)";
+                document.querySelector("#mr_sta2").getElementsByClassName("mr_row")[rowId].style.backgroundColor = "light-dark(rgba(41, 237, 136,0.9),rgba(33,178,103,0.9))";
             } catch (e) {
                 console.log(e);
             }

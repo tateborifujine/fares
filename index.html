@@ -18,8 +18,8 @@
   　{"@context": "https://schema.org","@type": "WebApplication","name": "ふぁれす(fares/JR運賃計算WEB)","url": "https://tatebori.static.jp/f/","image": "https://tatebori.static.jp/f/img/ogp_image.jpg","description": "JR線普通乗車券の運賃計算に特化したwebアプリです。最長普通乗車券といった複雑な経路や、一部の連絡乗車券にも対応しています。経路の保存/読込機能もあります。"}
   　</script>
     <title>ふぁれす(fares/JR運賃計算WEB)</title>
-    <script src="./data.js?v=20261115"></script>
-    <script src="./tfare.js?v=20261113"></script>
+    <script src="./data.js?v=20261119"></script>
+    <script src="./tfare.js?v=20261119"></script>
     <script src="./henkan.js?v=20260831"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
     <script src="./auto.js?v=20261112"></script>
@@ -29,9 +29,9 @@
     <script src="./gakunyu.js"></script>
     <script src="./rff.js"></script>
     <script src="./d2.js?v=20260817"></script>
-    <link rel="stylesheet" href="./style.css?v=20260831">
+    <link rel="stylesheet" href="./style.css?v=20261119">
     <link rel="icon" href="./favicon.ico">
-    <link rel="stylesheet" href="./hamburger.css">
+    <link rel="stylesheet" href="./hamburger.css?v=20261119">
     <link rel="canonical" href="https://tatebori.static.jp/f/">
     <script>
         const allowedDomain = 'tatebori.static.jp';
@@ -52,7 +52,7 @@
 </head>
 <style>
     .fadeout { 
-    animation: fadeOut 3s; /*keyframesで命名したものを使う。2秒間で消える*/
+    animation: fadeOut 4s; /*keyframesで命名したものを使う。2秒間で消える*/
     animation-fill-mode: both; /*0%の時と100%の時の状態を保つ*/
 }
   
@@ -60,7 +60,7 @@
     0% {
         opacity: 1; /*初めに存在する*/
     }
-    20%{
+    30%{
         opacity:1;
     }
     100% {
@@ -72,9 +72,10 @@
     <div id="popup1" class="fadeout" style="position:absolute;top:70px;left:0px;">
         <img src="./img/fares_cara.png" width="80px" style="position:absolute;left:-10px"/>
         <svg style="position:absolute;left:50px;" version="1.1" id="svg_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160px" height="160px">
-            <style type="text/css">.st-line2{stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}</style>
+            <style type="text/css">.st-line2{stroke:light-dark(#000000,#ffffff);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
+            text{fill:light-dark(black,white)}</style>
             <g transform="translate(13,0)">
-                <path class="st-line2" d="m 0 0 h 140 v 80 h -140 v -50 l -10 -10 l 10 -10 v -10" fill="rgba(256,256,256,0.5)"/>
+                <path class="st-line2" d="m 0 0 h 140 v 80 h -140 v -50 l -10 -10 l 10 -10 v -10" fill="light-dark(rgba(256,256,256,0.5),rgba(18,18,18,1.0))"/>
                 <g font-size="16px" transform="translate(0,20)">
                     <text x="0" y="0">便利な会員への</text>
                     <text x="0" y="24">登録/ﾛｸﾞｲﾝは上の</text>
@@ -82,6 +83,23 @@
                 </g>
             </g>
         </svg>
+    </div>
+    <div id="popup2" class="fadeout" style="position:absolute;top:240px;left:0px;">
+        <svg style="position:absolute;" version="1.1" id="svg_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160px" height="160px">
+            <style type="text/css">.st-line2{stroke:light-dark(#000000,#ffffff);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
+            text{fill:light-dark(black,white)}</style>
+            <g transform="translate(3,0)">
+                <path class="st-line2" d="m 0 0 h 140 v 10 l 15 25 l -15 25 v 68 h -140 v -128 z" fill="light-dark(rgba(256,256,256,0.5),rgba(18,18,18,1.0))"/>
+                <g font-size="16px" transform="translate(0,20)">
+                    <text x="0" y="0">New!新機能</text>
+                    <text x="0" y="24">ﾀﾞｰｸﾓｰﾄﾞの設定は、</text>
+                    <text x="0" y="48">右"その他"ﾎﾞﾀﾝを</text>
+                    <text x="0" y="72">開いて、下の方</text>
+                    <text x="0" y="96">"表示設定から!!"</text>
+                </g>
+            </g>
+        </svg>
+        <img src="./img/fares_cara.png" width="80px" style="position:absolute;left:125px"/>
     </div>
     <div class="selectline2">
         <div class="selectline">
@@ -96,7 +114,7 @@
     <div class="result">
         <div style="position:absolute;left:122px;top:-9px;"><!--MR式入力発火用-->
             <svg version="1.1" id="mr-icon-minimal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="29px" height="29px" onclick="mr.f.dom.open();">
-                <style type="text/css">.st-line{fill:none;stroke:#000000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}</style>
+                <style type="text/css">.st-line{fill:none;stroke:light-dark(#000000,#ffffff);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}</style>
                 <g>
                     <path class="st-line" d="M3,18V6l4.5,6L12,6v12"/>
                     <path class="st-line" d="M16,18v-6c0-2,1.5-3.5,3.5-3.5S23,10,23,12s-1.5,3.5-3.5,3.5H16"/>
@@ -104,11 +122,11 @@
                 </g>
             </svg>
         </div>
-        <div style="position: absolute;width:120px;height:20px;top:-5px;border:1px solid black;border-radius:3px;cursor: grab;">
-            <div class="guide3" onclick="guide.dis2()" style="position:absolute;text-align:center;width:59.5px;top:0px;left:0px;background-color:rgba(41, 237, 136, 0.8);height:20px;border-radius:2px 0px 0px 2px;">
+        <div style="position: absolute;width:120px;height:20px;top:-5px;border:1px solid light-dark(black,white);border-radius:3px;cursor: grab;">
+            <div class="guide3" onclick="guide.dis2()" style="position:absolute;text-align:center;width:59.5px;top:0px;left:0px;background-color:light-dark(rgba(41, 237, 136,0.8),rgba(33,178,103,0.8));height:20px;border-radius:2px 0px 0px 2px;">
                 <div style="margin-top:-2px;">結果等</div>
             </div>
-            <div style="position:absolute;width:1px;height:20px;left:59.5px;background-color:black"></div>
+            <div style="position:absolute;width:1px;height:20px;left:59.5px;background-color:light-dark(black,white)"></div>
             <div class="guide3" onclick="guide.dis1()" style="position:absolute;text-align:center;width:59.5px;top:0px;left:60.5px;height:20px;border-radius:0px 2px 2px 0px;">
                 <div style="margin-top:-2px;">ｶﾞｲﾄﾞ入</div>
             </div>
@@ -158,7 +176,7 @@
     </div>
     <div id="url_">
         <div id="url">
-            <div class="urlback"><div onclick="url.f.back()" style="position:absolute;top:-4px;left:3px;font-weight:bold">✕</div></div>
+            <div class="urlback"><div onclick="url.f.back()" style="position:absolute;top:-7px;left:3px;">✕</div></div>
             <div style="margin-left:5px;">
                 <div>URLを共有</div>
                 <div><label><input id="getinfo2" type="checkbox" checked>詳細情報も共有</label></div>
@@ -224,7 +242,7 @@
         <div><h101>設定/その他出力/リンク類</h101></div>
         <!--<div style="position:absolute;width:100%;height: 2px;background: linear-gradient(to right, white 0%,black 40% ,black 60%,white 100%);"></div>-->
         <div>
-            <div style="position:absolute;top:33px;height:calc(96dvh - 40px - 70px);overflow-y: scroll;border:1px solid black;left:3px;width:calc(100% - 6px);">
+            <div style="position:absolute;top:33px;height:calc(96dvh - 40px - 70px);overflow-y: scroll;border:1px solid light-dark(black,white);left:3px;width:calc(100% - 6px);border-radius:5px">
                 <div><h101>有効期間・途中下車可否</h101></div>
                 <div id="validdays1" style="font-size:105%;margin-left:10px"></div>
                 <div><h101>特殊設定</h101></div>
@@ -266,6 +284,15 @@
                     <div><label><input id="checkbox_smode_valid" type="checkbox" onchange="smode.f.do('valid',this.checked ? 'open' : 'close')">有効期間/途中下車可否を常に表示</label></div>
                     <div><label><input id="checkbox_smode_kana" type="checkbox" onchange="smode.f.do('kana',!this.checked ? 'open' : 'close')">疑似カナ入力を非表示</label></div>
                     <div><label><input id="checkbox_smode_kana2" type="checkbox" onchange="setsf.wr('smode_kana2',this.checked)">疑似カナコード入力拡大（文字部分をタップしてください。）</label></div>
+                    <div>
+                        <label>ライト/ダークモード設定：
+                        <select id="sets_dark" onchange="setsf.wr('dark',this.value)">
+                            <option value="default" selected>ブラウザ設定に準拠</option>
+                            <option value="light">ライトモード</option>
+                            <option value="dark">ダークモード</option>
+                        </select>
+                        <!--<input id="sets_dark" type="checkbox" onchange="setsf.wr('dark',this.checked)">ダークモードを使用する--></label>
+                    </div>
                 </div>
                 <div><h101>補正禁止指定</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
@@ -307,7 +334,9 @@
                 </div>
                 <div><h101>現在のVersion</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
-                    現在：ふぁれす v1.0.19(2026/11/15最終更新）<br>
+                    現在：ふぁれす v1.1.0(2026/11/19最終更新）<br>
+                    ・ダークモードに対応したほか、関西線一部駅の事務管理コード設定ミスを修正しました。（v1.1.0:2026/11/19）<br>
+                    ・一部駅の事務管理コード設定ミスのほか、特殊経由線関連の不具合を修正しました。（v1.0.20:20226/11/18）<br>
                     ・東秋留、猊鼻渓、門静の各駅の収容ミスのほか、一部駅の事務管理コード設定ミスを修正しました。（v1.0.19:2026/11/15）<br>
                     ・いくつかの致命的バグを、再度修正しました。（v1.0.18:2026/11/13）<br>
                     ・いくつかの致命的バグを修正しました。（v1.0.17:2026/11/12）<br>
@@ -345,7 +374,7 @@
                     <div><a href=".../" target="_blank">本サイトトップページ</a></div>
                 </div>
             </div>
-            <div style="position:absolute;text-align: center;vertical-align: middle;font-size:60px;width:100%;height:70px;bottom:0px;border-top:1px solid black;cursor: grab;" onclick="setting.f.close()">
+            <div style="position:absolute;text-align: center;vertical-align: middle;font-size:60px;width:100%;height:70px;bottom:0px;border-top:1px solid light-dark(black,white);cursor: grab;" onclick="setting.f.close()">
                 <div style="line-height:1;">閉じる</div>
             </div>
         </div>
@@ -415,7 +444,7 @@
         <div><h101>分割計算</h101>　※現在開発中の機能です!!</div>
         <!--<div style="position:absolute;width:100%;height: 2px;background: linear-gradient(to right, white 0%,black 40% ,black 60%,white 100%);"></div>-->
         <div>
-            <div style="font-size:105%;position:absolute;top:33px;height:calc(96dvh - 40px - 10px);overflow-y: scroll;border:1px solid black;left:3px;width:calc(100% - 6px);">
+            <div style="font-size:105%;position:absolute;top:33px;height:calc(96dvh - 40px - 10px);overflow-y: scroll;border:1px solid light-dark(black,white);left:3px;width:calc(100% - 6px);border-radius:5px">
                 <div><h101>分割前運賃</h101></div>
                 <div style="margin-left:10px;">
                     <div id="b_dd"></div>
@@ -514,7 +543,7 @@
                 ④「現在の経路を挿入する」を押す。<br>
                 ※編集中の経路中の駅を発駅または着駅としない経路を挿入した場合、何も変化しません。<br>
                 ※経路の「途中」を編集する場合にご利用ください。分岐させたい場合はメイン画面やMR式入力画面から編集し、発駅〜途中駅を変更したい場合は発着反転を行ったうえでメイン画面やMR式入力画面から編集を行ってください。<br>
-                ※挿入後に破綻した経路となるような場合は、正常に動作しません。
+                ※挿入後に破綻した経路となるような場合は、正常に動作しません。<br>
                 ・特殊な動作例<br>
                 東京→倉敷　経由：東海・山陽・山陰・伯備の経路で、京都→倉敷　経由：山陰・伯備経由を挿入する場合<br>
                 エラーとなり正常に挿入できません。<br>
@@ -4410,7 +4439,9 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                     temp.co.push(temp.co4[0].sta[i2][0]);
                                     temp.co2.splice(i, 1, temp.co4[1].kana, sta.tkana[sta.tkana[temp.co4[1].tkana].pair].none.toString());
                                     if (i == temp.co2.length - 3) temp.co2.pop();//終端である場合、末尾の駅の指定は不要
+                                    //console.log(4413)
                                 } else {
+                                    //console.log(4415)
                                     if (temp.co.length > 2 && temp.co[temp.co.length - 2] == temp.co4[0].sta[i2][0]) { //特殊経由線から出るとき、入るときと同じ接続駅を選ばない
                                         try {
                                             temp.co.push(sta.kana[temp.co[temp.co.length - 1]].sta.filter((e) => (e[3] != false && e[3].includes(temp.co2[i])))[1][0]);
@@ -4426,15 +4457,18 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                                         if (temp.i28 < temp.i27[0]) temp.co.push(sta.kana[sta.alltkana3[temp.co2[i]]].sta[temp.i27[0]][0]);
                                         else if (temp.i27[1] < temp.i28) temp.co.push(sta.kana[sta.alltkana3[temp.co2[i]]].sta[temp.i27[1]][0]);
                                         else temp.co.push(temp.co4[0].sta[i2][0]);
-                                    } else { try {if (i > 0 && temp.co2.length > i + 1 && "tkana" in temp.co4[0] == false && Object.keys(sta.alltkana3).includes(temp.co2[i - 1]) && temp.co.length > 0 && (temp.co.length == 1 || (temp.co.length > 2 && temp.co.at(-3) != sta.alltkana3[temp.co2[i - 1]] && (i - 2 < 0 || temp.co2[i - 2].toString().types() == 3)))) { //特殊経由線から出るとき、近い方の接続駅を自動で選択する
-                                        //console.log(4428)
+                                    } else { try {if (i > 0 && temp.co2.length > i + 1 && "tkana" in temp.co4[0] == false && Object.keys(sta.alltkana3).includes(temp.co2[i - 1]) && temp.co2[i] == sta.alltkana3[temp.co.at(-1)] && temp.co.length > 0 && (temp.co.length == 1 || (temp.co.length > 2 && temp.co.at(-3) != sta.alltkana3[temp.co2[i - 1]] && (i - 2 < 0 || temp.co2[i - 2].toString().types() == 3)))) { //特殊経由線から出るとき、近い方の接続駅を自動で選択する
+                                        //console.log(4428,...temp.co,6666,...temp.co2,i,JSON.parse(JSON.stringify(temp.co4)))
                                         temp.i27 = sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta.flatMap((e, s) => ((e[3] != false && e[3].includes(temp.co2[i - 1])) ? s : []));
                                         /*if (temp.co.length == 1) temp.i28 = sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta.findIndex((e) => e[0] == fst || e[1] == fst || e[2] == fst);
-                                        else*/ temp.i28 = sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta.findIndex(e => (e[3] != false && e[3].includes(temp.co2[i + 1])) || e[0] == temp.co2[i + 1] || e[1] == temp.co2[i + 1] || e[2] == temp.co2[i + 1]);
+                                        else*/ temp.i28 = sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta.findIndex(e => (e[3] != false && e[3].includes(sta.tkana?.[temp.co2[i + 1]]?.kana ?? temp.co2[i + 1])) || e[0] == temp.co2[i + 1] || e[1] == temp.co2[i + 1] || e[2] == temp.co2[i + 1]);
                                         if (temp.i28 < temp.i27[0]) temp.co.push(sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta[temp.i27[0]][0]);
                                         else if (temp.i27[1] < temp.i28) temp.co.push(sta.kana[sta.alltkana3[temp.co2[i - 1]]].sta[temp.i27[1]][0]);
                                         else temp.co.push(temp.co4[0].sta[i2][0]);
-                                    } else temp.co.push(temp.co4[0].sta[i2][0]); //接続駅を自動で決定
+                                    } else {
+                                        //console.log(4439,...temp.co,JSON.parse(JSON.stringify(temp.co4)),...temp.co,i)
+                                        temp.co.push(temp.co4[0].sta[i2][0]); //接続駅を自動で決定
+                                    }
                                     } catch (e) {
                                        console.error(e);
                                        temp.co.push(temp.co4[0].sta[i2][0]);
@@ -4550,9 +4584,10 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
                         }
                     } else {
                         data23 = JSON.parse(JSON.stringify(sta.kana[v[i]].sta.slice(temp.d2.i[0],temp.d2.i[1] + 1)));
-                    } data23[data23.length - 1][6] = void 0;
+                    } //console.log(v[i - 1])
+                    /*if (data23.length > 0 && data23.at(-1).length > 5)*/ data23[data23.length - 1][6] = void 0;
                     data24 = {sta:data23,line:v[i],skanatf:true}; //0024:err:seh:dispatch_user_callback ignoring
-                    if (/[567]/.test(data23[0][6].numtoarr()[0]) || v[i] == "シンカ") {
+                    if (/[567]/.test(data23[0]?.[6].numtoarr()[0]) || v[i] == "シンカ") {
                       data24.sta2 = [];
                       temp.i26 = true;
                       if (v[i] == "シンカ") temp.b1 = JSON.parse(JSON.stringify(sta.kana["トウカ"].sta.slice(2,-1).concat(sta.kana["サンヨ"].sta,sta.kana["カコシ"].sta.slice(3,sta.kana["カコシ"].sta.length))));
@@ -5259,13 +5294,13 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             else if (!setting.gm) setting.f.open();
         };guide.dis1 = () => {
             document.getElementById("guide").style.zIndex = 3;
-            document.getElementsByClassName("guide3")[0].style.backgroundColor = 'white';
-            document.getElementsByClassName("guide3")[1].style.backgroundColor = "rgba(41, 237, 136, 0.8)";
+            document.getElementsByClassName("guide3")[0].style.backgroundColor = '';
+            document.getElementsByClassName("guide3")[1].style.backgroundColor = "light-dark(rgba(41, 237, 136,0.8),rgba(33,178,103,0.8))";
             guide.dis = true;
         };guide.dis2 = () => {
             document.getElementById("guide").style.zIndex = 1;
-            document.getElementsByClassName("guide3")[0].style.backgroundColor = "rgba(41, 237, 136, 0.8)";
-            document.getElementsByClassName("guide3")[1].style.backgroundColor = 'white';
+            document.getElementsByClassName("guide3")[0].style.backgroundColor = "light-dark(rgba(41, 237, 136,0.8),rgba(33,178,103,0.8))";
+            document.getElementsByClassName("guide3")[1].style.backgroundColor = '';
             guide.dis = false;
         };function share (title,text,url_s){
             if (!window.navigator.share) {
@@ -5615,7 +5650,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             }
             localStorage.setItem("shkey", shkey.tf);
             sets = localStorage.getItem("sets") ?? "und";
-            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false,k160:false,k70_2:false,k16032:true,rk6:false};
+            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false,k160:false,k70_2:false,k16032:true,rk6:false,dark:"default"};
             else {
                 try {
                     sets = JSON.parse(sets);
@@ -5633,6 +5668,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (!"k70_2" in sets || sets.k70_2 == void 0) sets.k70_2 = false; 
             if (!"k16032" in sets || sets.k16032 == void 0) sets.k16032 = true;
             if (!"rk6" in sets || sets.rk6 == void 0) sets.rk6 = false;
+            if (!"dark" in sets || sets.dark == void 0) sets.dark = "default";
             localStorage.setItem("sets",JSON.stringify(sets));
             if (!sets.r) document.getElementById("sets_r").checked = false;
             if (!sets.mr_seni) document.getElementById("mr_seni").checked = false;
@@ -5642,6 +5678,10 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (sets.k70_2 == true) document.getElementById("sets_k70_2").checked = true;
             if (sets.k16032 == true) document.getElementById("sets_k16032").checked = true;
             if (sets.rk6 == true) document.getElementById("sets_rk6").checked = true;
+            if (sets.dark == "dark" || sets.dark == "light") {
+                document.getElementById("sets_dark").value = sets.dark;
+                document.documentElement.dataset.theme = sets.dark;
+            }
             if (sets.smode_kana == "close") {
             document.getElementById("checkbox_smode_kana").checked = true;
                 smode.f.do("kana","close");
@@ -5654,6 +5694,11 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
         setsf.wr = (v,v2) => {
             sets[v] = v2;
             localStorage.setItem("sets",JSON.stringify(sets));
+            if (v == "dark") {
+                if (v2 == "dark") document.documentElement.dataset.theme = "dark";
+                else if (v2 == "light") document.documentElement.dataset.theme = "light";
+                else delete document.documentElement.dataset.theme
+            }
         }
         function tofullscreen () {
             if (isfullscreen()) {//全画面表示中の場合、解除
