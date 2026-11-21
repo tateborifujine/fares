@@ -17,7 +17,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   if (currentUser && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) loadkeirodata();
   if (currentUser) {
     document.getElementById("status2").innerHTML = "ログイン中";
-    document.getElementById("status2").style.color = "black";
+    document.getElementById("status2").style.color = "light-dark(black,white)";
     document.getElementById("popup1").style.display = "none";
   } else {
     document.getElementById("status2").innerHTML = "未ログイン";

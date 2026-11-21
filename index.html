@@ -22,7 +22,7 @@
     <script src="./tfare.js?v=20261119"></script>
     <script src="./henkan.js?v=20260831"></script>
     <script src="./bunkatsu.js?v=20260804"></script>
-    <script src="./auto.js?v=20261112"></script>
+    <script src="./auto.js?v=20261119"></script>
     <script src="./edit.js"></script>
     <script src="./iframe.js?v=20261106"></script>
     <script src="./hosei.js"></script>
@@ -287,8 +287,8 @@
                     <div>
                         <label>ライト/ダークモード設定：
                         <select id="sets_dark" onchange="setsf.wr('dark',this.value)">
-                            <option value="default" selected>ブラウザ設定に準拠</option>
-                            <option value="light">ライトモード</option>
+                            <option value="default">ブラウザ設定に準拠</option>
+                            <option value="light" selected>ライトモード（初期設定）</option>
                             <option value="dark">ダークモード</option>
                         </select>
                         <!--<input id="sets_dark" type="checkbox" onchange="setsf.wr('dark',this.checked)">ダークモードを使用する--></label>
@@ -334,7 +334,8 @@
                 </div>
                 <div><h101>現在のVersion</h101></div>
                 <div style="font-size:105%;margin-left:10px;">
-                    現在：ふぁれす v1.1.0(2026/11/19最終更新）<br>
+                    現在：ふぁれす v1.1.1(2026/11/20最終更新）<br>
+                    ・若江線連絡となる経路うち、特定の場合における有効期間と、小児/障割/小児障割の回答誤りを修正しました。（v1.0.1:2026/11/20）<br>
                     ・ダークモードに対応したほか、関西線一部駅の事務管理コード設定ミスを修正しました。（v1.1.0:2026/11/19）<br>
                     ・一部駅の事務管理コード設定ミスのほか、特殊経由線関連の不具合を修正しました。（v1.0.20:20226/11/18）<br>
                     ・東秋留、猊鼻渓、門静の各駅の収容ミスのほか、一部駅の事務管理コード設定ミスを修正しました。（v1.0.19:2026/11/15）<br>
@@ -1189,6 +1190,7 @@
                     di = customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.sres2 + temp.k89k);
                     temp.di2 = Math.ceil(customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.sres[0] + temp.k89k));
                     if (temp.di2 < 101 && di < 101) return [1,"",false];
+                    else if (temp.di2 >= 101 && Math.ceil(customround(temp.c.kiro[0][0] + temp.c.kiro[0][1] + temp.k89k)) < 101) return [2,"",true];
                     else return [Math.ceil(customround(temp.c.kiro[0][0] + temp.c.kiro[0][1]) / 200 + 1) + 1,"旅客連絡運輸規則第75条第1号イ(イ)b参照",true]
                 } else {
                     if (temp.c.flag[5]) {
@@ -3835,6 +3837,7 @@
                     temp.dup = true;
                 }
             } temp.c.skiro2 = (temp.c.skiro.length > 0) ? [temp.sres[0]] : [];
+            [temp.sres4,temp.sres5] = [0,0]; //JRと合算してから割り引く場合
             for (let i = 0;i < temp.c.skiro.length;i++) {
                 temp.sres[0] += temp.c.skiro[i][0];
                 temp.i25 = temp.i24.indexOf(temp.c.skiro[i][2]);
@@ -3852,7 +3855,12 @@
                     else if ((ptype == 1 || ptype == 8 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) || (ptype == 7 && temp.sres3 > 100)) temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10 - ((data2.length > 1) ? 50 : 0);
                     else temp.sres[1] += temp.c.skiro[i][1] - ((data2.length > 1) ? 100 : 0);
                     if (data2.length > 1) info.add(0,"乗継割引/大人100円引")
-                } else if (ptype == 1 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) {
+                } else if ((ptype == 1 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) && temp.c.skiro[i][2] == "6067") {
+                    temp.sres4 = customround(temp.c.skiro[i][1]);
+                    temp.sres5 = customround(temp.sres4 / 2);
+                    temp.sres[1] += temp.sres5;
+                } 
+                else if (ptype == 1 || ptype == 10 || ptype == 11 || ptype == 12 || ptype == 13) {
                     if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                     else temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;
                 } else if (ptype == 2 && temp.c.skiro[i][2] == "2200" && customround(temp.c.skiro[i][0] + temp.c.kiro[0][0] + temp.c.kiro[0][1]) > 100) {
@@ -3863,7 +3871,11 @@
                     temp.sres[1] += Math.floor(temp.c.skiro[i][1] * 0.6 / 10) * 10;
                     temp.i12 = temp.c.skiro[i][1] - Math.floor(temp.c.skiro[i][1] * 0.6 / 10) * 10;
                 } else if (ptype == 7 && temp.sres3 > 100) { //障害者割引(大人)の場合
-                    if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
+                    if (temp.c.skiro[i][2] == "6067") {
+                        temp.sres4 = customround(temp.c.skiro[i][1]);
+                        temp.sres5 = customround(temp.sres4 / 2);
+                        temp.sres[1] += temp.sres5;
+                    } else if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                     else temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;//それ以外の場合、端数切り上げ
                 } else if (ptype == 7 && data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$|^9581$/.test(data2[0].line)) {
                     temp.sres[1] += Math.round(temp.c.skiro[i][1] / 20) * 10;
@@ -3875,7 +3887,11 @@
                         if (temp.c.skiro[i][2] == "6201") temp.sres[1] += Math.floor(Math.floor(temp.c.skiro[i][1] / 20) * 10/ 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                         else temp.sres[1] += Math.round(Math.round(temp.c.skiro[i][1] / 20) * 10 / 20) * 10;//それ以外の場合、端数切り上げ
                     } else {
-                        if (temp.c.skiro[i][2] == "6201" || temp.c.skiro[i][2] == "2200") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
+                        if (temp.c.skiro[i][2] == "6067") {
+                            temp.sres4 = customround(temp.c.skiro[i][1]);
+                            temp.sres5 = customround(temp.sres4 / 4);
+                            temp.sres[1] += temp.sres5;
+                        } else if (temp.c.skiro[i][2] == "6201" || temp.c.skiro[i][2] == "2200") temp.sres[1] += Math.floor(temp.c.skiro[i][1] / 20) * 10;//IRいしかわ鉄道の場合、端数切り捨て
                         else if (data2.length == temp.c.skiro.length && /^2501$|^2504$|^2590$|^3711$|^4586$|^4719$|^5510$|^5555$|^5557$|^5566$|^5570$|^5572$|^5578$|^5579$|^6185$|^6201$|^6204$|^6208$|^7551$|^7553$|^9508$|^9520$|^9522$|^9620$|^9581$/.test(data2[0].line)) {
                             temp.sres[1] += Math.round(Math.round(temp.c.skiro[i][1] / 20) * 10 / 20) * 10;
                             if (data2[0].line == "6185" && temp.sres[1] < 210) temp.sres[1] = 110;
@@ -3884,11 +3900,12 @@
                     }
                 } else temp.sres[1] += temp.c.skiro[i][1];
                 temp.c.skiro2.splice(temp.c.skiro2.length - 1,1,temp.sres[1] - temp.c.skiro2.at(-1),temp.sres[1]);
-            } if (temp.c.skiro2.length > 1) temp.c.skiro2.pop(); 
+            } if (temp.c.skiro2.length > 1) temp.c.skiro2.pop();
+            if (temp.sres5 > 0) temp.sres[1] -= temp.sres5;
             if (ptype == 2 && (customround(temp.c.kiro[0][0] + temp.c.kiro[0][1]) > 100 || temp.i16)) {
                 temp.res = Math.floor(temp.res * 0.8 / 10) * 10 + temp.sres[1];
                 info.add(0,"JR線学割2割引適用");
-            } else if (ptype == 1) temp.res = Math.floor(temp.res / 20) * 10 + temp.sres[1];
+            } else if (ptype == 1) temp.res = Math.floor((temp.res + temp.sres4) / 20) * 10 + temp.sres[1];
             else if (ptype == 3 || ptype == 10) {
                 if (/[13456]/.test(temp.i5) == false && (temp.c.skiro == 0 || (temp.c.skiro.every(e => ekabusha.includes(e[2])) &&  !(!isNaN(Number(data2[0].line)) && !isNaN(Number(data2.at(-1).line)))))/* && (isNaN(Number(data2[0].line)) || data2[0].line == "2200") && (isNaN(Number(data2[data2.length - 1].line)) || data2[data2.length - 1].line == "2200")*/) {
                     if (ptype == 10) temp.res = Math.floor((Math.floor(temp.res / 20) * 10) * 0.6 / 10) * 10 + temp.sres[1];
@@ -3934,13 +3951,14 @@
                 }
             } else if (ptype == 7 && temp.sres3 > 100) {
                 info.add(0,"障害者割引適用");
-                temp.res = Math.floor(temp.res * 0.5 / 10) * 10 + temp.sres[1];
+                temp.res = Math.floor((temp.res + temp.sres4) * 0.5 / 10) * 10 + temp.sres[1];
             } else if (ptype == 8) {
                 if (temp.sres3 > 100) {
                     info.add(0,"障害者割引/小児で計算");
-                    temp.res = Math.floor(Math.floor(temp.res * 0.5 / 10) * 10 * 0.5 / 10) * 10 + temp.sres[1];
+                    temp.res = Math.floor(Math.floor((temp.res + temp.sres4) * 0.5 / 10) * 10 * 0.5 / 10) * 10 + temp.sres[1];
                 } else temp.res = Math.floor(temp.res / 20) * 10 + temp.sres[1];
             } else temp.res += temp.sres[1];
+            if (temp.sres5 > 0) temp.sres[1] += temp.sres5;
             return temp.res;
         } function k70 (i,i2) {
             temp.i8 = false;
@@ -5650,7 +5668,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             }
             localStorage.setItem("shkey", shkey.tf);
             sets = localStorage.getItem("sets") ?? "und";
-            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false,k160:false,k70_2:false,k16032:true,rk6:false,dark:"default"};
+            if (sets === "und") sets = {r:true,mr_seni:true,dst:false,tkp:false,smode_kana:"open",smode_valid:"close",smode_kana2:false,k160:false,k70_2:false,k16032:true,rk6:false,dark:"light"};
             else {
                 try {
                     sets = JSON.parse(sets);
@@ -5668,7 +5686,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (!"k70_2" in sets || sets.k70_2 == void 0) sets.k70_2 = false; 
             if (!"k16032" in sets || sets.k16032 == void 0) sets.k16032 = true;
             if (!"rk6" in sets || sets.rk6 == void 0) sets.rk6 = false;
-            if (!"dark" in sets || sets.dark == void 0) sets.dark = "default";
+            if (!"dark" in sets || sets.dark == void 0) sets.dark = "light";
             localStorage.setItem("sets",JSON.stringify(sets));
             if (!sets.r) document.getElementById("sets_r").checked = false;
             if (!sets.mr_seni) document.getElementById("mr_seni").checked = false;
@@ -5681,7 +5699,7 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             if (sets.dark == "dark" || sets.dark == "light") {
                 document.getElementById("sets_dark").value = sets.dark;
                 document.documentElement.dataset.theme = sets.dark;
-            }
+            } else if (sets.dark == "default") document.getElementById("sets_dark").value = sets.dark;
             if (sets.smode_kana == "close") {
             document.getElementById("checkbox_smode_kana").checked = true;
                 smode.f.do("kana","close");
@@ -5789,6 +5807,6 @@ if (i < temp.co2.length - 1 && temp.co2[i + 1] == "ヨサン") temp.co2.splice(i
             }
         };
     </script>
-    <script type="module" src="databox.js?v=20261109-2"></script>
+    <script type="module" src="databox.js?v=20261120"></script>
 </body>
 </html>
